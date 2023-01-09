@@ -2,7 +2,11 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:manager/models/login/login_response.dart';
+import 'package:manager/providers/login_response_provider.dart';
+import 'package:manager/providers/workspace_provider.dart';
 import 'package:manager/screens/estate/notification/notification_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../util/assets.dart';
 import '../../../../util/colors.dart';
@@ -16,7 +20,6 @@ import '../widgets/unverified_payment.dart';
 import '../widgets/upcoming_bill.dart';
 import 'package:intl/intl.dart';
 
-
 class DashboardTab extends StatefulWidget {
   const DashboardTab({Key? key}) : super(key: key);
 
@@ -26,19 +29,25 @@ class DashboardTab extends StatefulWidget {
 
 class _DashboardTabState extends State<DashboardTab> {
   List<ToDo> listTodo = [
-    ToDo(Iconsax.profile_add, 'Record Payment',
-        'Log payments made by a resident via bank account. ','/record_payment'),
+    ToDo(
+        Iconsax.profile_add,
+        'Record Payment',
+        'Log payments made by a resident via bank account. ',
+        '/record_payment'),
     ToDo(Iconsax.clock, 'Add a property unit',
-        'Generate a code for a new tenant today','/add_property_unit'),
+        'Generate a code for a new tenant today', '/add_property_unit'),
     ToDo(Iconsax.add, 'Record Expense',
-        'Log record of your Estate expenses as you go','/record_expenses'),
+        'Log record of your Estate expenses as you go', '/record_expenses'),
     ToDo(Iconsax.danger, 'Remove a resident',
-        'Generate a code for a new tenant today','/remove_resident'),
+        'Generate a code for a new tenant today', '/remove_resident'),
     ToDo(Iconsax.clipboard_text, 'Resolve an issue',
-        'Generate a code for a new tenant today','/incident_report'),
+        'Generate a code for a new tenant today', '/incident_report'),
   ];
   @override
   Widget build(BuildContext context) {
+    var profile = Provider.of<LoginResponseProvider>(context).loginResponse;
+    List<Workspace> workspaces = profile.user.workspaces;
+
     DateTime now = DateTime.now();
     var timeNow = int.parse(DateFormat('kk').format(now));
     var message = '';
@@ -71,20 +80,18 @@ class _DashboardTabState extends State<DashboardTab> {
                       text: TextSpan(children: <TextSpan>[
                         TextSpan(
                             text: message,
-                            style: TextStyle(color: Colors.black,
+                            style: TextStyle(
+                                color: Colors.black,
                                 fontSize: Sizes.w20,
                                 fontWeight: FontWeight.bold)),
                         TextSpan(
-                            text: "Mr. John",
-                            style: TextStyle(color: Colors.black,
+                            text: "${profile.displayName}",
+                            style: TextStyle(
+                                color: Colors.black,
                                 fontSize: Sizes.w20,
                                 fontWeight: FontWeight.bold)),
-
-                      ]
-                      )
-                  ),
+                      ])),
                 ),
-
                 Padding(
                   padding: EdgeInsets.only(right: Sizes.w10, left: Sizes.w10),
                   child: Text(
@@ -104,25 +111,31 @@ class _DashboardTabState extends State<DashboardTab> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     workspace();
                   },
-                  child: SvgPicture.asset(AssetsPath.workspace, height: Sizes.w25, color: Colors.black),
+                  child: SvgPicture.asset(AssetsPath.workspace,
+                      height: Sizes.w25, color: Colors.black),
                 ),
                 customVerticalDivider(width: Sizes.w10),
                 InkWell(
-                  onTap: (){
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) => const NotificationScreen()));
-                  },
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const NotificationScreen()));
+                    },
                     child: Padding(
                         padding: EdgeInsets.only(right: 4),
                         child: Badge(
-                          badgeContent: Text('3', style: TextStyle(fontSize: 13, color: Colors.white),),
-                          child: Icon(Iconsax.notification, size: Sizes.w30, color: Colors.black,),
-                        )
-                    )
-                )
+                          badgeContent: Text(
+                            '3',
+                            style: TextStyle(fontSize: 13, color: Colors.white),
+                          ),
+                          child: Icon(
+                            Iconsax.notification,
+                            size: Sizes.w30,
+                            color: Colors.black,
+                          ),
+                        )))
               ],
             ),
           )
@@ -138,13 +151,15 @@ class _DashboardTabState extends State<DashboardTab> {
               Text(
                 'What do you want to do today?',
                 style:
-                TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w20),
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w20),
               ),
               customDivider(height: Sizes.h20),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: listTodo.map((data) =>todoWidget(context, data.icon!, data.title!, data.subtitle!, data.link!))
+                  children: listTodo
+                      .map((data) => todoWidget(context, data.icon!,
+                          data.title!, data.subtitle!, data.link!))
                       .toList(),
                 ),
               ),
@@ -154,9 +169,9 @@ class _DashboardTabState extends State<DashboardTab> {
                   //height: Sizes.h165,
                   decoration: BoxDecoration(
                       color: Colors.blue.withOpacity(.1),
-                      borderRadius: BorderRadius.all(Radius.circular(Sizes.w20))),
-                  child: AccountSetup(context)
-              ),
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(Sizes.w20))),
+                  child: AccountSetup(context)),
               customDivider(height: Sizes.h20),
               Container(
                 width: double.infinity,
@@ -176,14 +191,16 @@ class _DashboardTabState extends State<DashboardTab> {
                               Text(
                                 'Units',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: Sizes.w20),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Sizes.w20),
                               ),
                               customDivider(height: Sizes.h10),
                               Text(
                                 '0',
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: Sizes.w25,),
+                                  fontSize: Sizes.w25,
+                                ),
                               )
                             ],
                           ),
@@ -203,7 +220,8 @@ class _DashboardTabState extends State<DashboardTab> {
                               Text(
                                 'Active Residents',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: Sizes.w20),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Sizes.w20),
                               ),
                               customDivider(height: Sizes.h10),
                               Text(
@@ -231,7 +249,8 @@ class _DashboardTabState extends State<DashboardTab> {
                               Text(
                                 'Debtors',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: Sizes.w20),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Sizes.w20),
                               ),
                               customDivider(height: Sizes.h10),
                               Text(
@@ -250,16 +269,23 @@ class _DashboardTabState extends State<DashboardTab> {
               customDivider(height: Sizes.h20),
               Row(
                 children: [
-                  optionMenu(context, Iconsax.empty_wallet, 'Payments', AppColors.success.withOpacity(.6), '/manager_payment'),
+                  optionMenu(context, Iconsax.empty_wallet, 'Payments',
+                      AppColors.success.withOpacity(.6), '/manager_payment'),
                   customVerticalDivider(width: Sizes.w15),
-                  optionMenu(context, Iconsax.money_3, 'Expenditure', AppColors.warningText.withOpacity(.6), '/manager_expenditure'),
+                  optionMenu(
+                      context,
+                      Iconsax.money_3,
+                      'Expenditure',
+                      AppColors.warningText.withOpacity(.6),
+                      '/manager_expenditure'),
                   customVerticalDivider(width: Sizes.w15),
-                  optionMenu(context, Iconsax.money_2, 'Settlements', AppColors.purpleBox.withOpacity(.6), '/settlements'),
+                  optionMenu(context, Iconsax.money_2, 'Settlements',
+                      AppColors.purpleBox.withOpacity(.6), '/settlements'),
                 ],
               ),
               customDivider(height: Sizes.h20),
               UnverifiedPayments(
-                  context,
+                context,
                 UnitsNumber: "1 Unit",
                 TotalAmount: "N30,000.00",
                 Initials: "EO",
@@ -284,17 +310,42 @@ class _DashboardTabState extends State<DashboardTab> {
     );
   }
 
-  workspace(){
+  workspace() {
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
         ),
         builder: (context) {
+          var profile =
+              Provider.of<LoginResponseProvider>(context).loginResponse;
+          List<Workspace> workspaces = profile.user.workspaces;
+
           return Container(
             //height: 350.0,
             padding: EdgeInsets.all(16),
-            child: ListView(
+            child: ListView.builder(
+              itemCount: workspaces.length,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () async {
+                    print(workspaces[index].workspaceId);
+                    var new_profile = await Provider.of<WorkspaceProvider>(
+                            context,
+                            listen: false)
+                        .fetchWorkspace(
+                            workspaces[index].workspaceId, profile.accessToken);
+                    print(new_profile!['numberOfUnits']);
+                  },
+                  child: ListTile(
+                    title: Text("${workspaces[index].name}"),
+                    subtitle:
+                        Text("${workspaces[index].managementCompanyName}"),
+                  ),
+                );
+              },
+            ),
+            /* child: ListView(
               children: [
                 Center(
                   child: Padding(
@@ -306,13 +357,12 @@ class _DashboardTabState extends State<DashboardTab> {
                 ),
                 SizedBox(
                   height: 10,
-                  child:  Icon(Iconsax.car),
+                  child: Icon(Iconsax.car),
                 ),
                 Text("Hello world")
               ],
-            ),
+            ), */
           );
-        }
-    );
+        });
   }
 }

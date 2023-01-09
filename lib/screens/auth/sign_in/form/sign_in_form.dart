@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:manager/providers/login_response_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../controller/login_controller.dart';
 import '../../../../util/colors.dart';
@@ -25,7 +30,7 @@ class _SignInFormState extends State<SignInForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-     padding: const EdgeInsets.only(left: 16, right: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16),
       child: ReactiveFormBuilder(
         form: _loginController.formGroup,
         builder: (context, form, child) => Column(
@@ -33,14 +38,11 @@ class _SignInFormState extends State<SignInForm> {
             ReactiveTextField(
               formControlName: LoginField.IDENTIFIER.name,
               decoration: const InputDecoration(
-                  labelText: 'Email',
-                  suffixIcon: Icon(Iconsax.sms)
-              ),
+                  labelText: 'Email', suffixIcon: Icon(Iconsax.sms)),
               onSubmitted: () => form.focus(LoginField.PASSWORD.name),
               validationMessages: (control) => {
                 ValidationMessage.required: kEmailNullError,
-                ValidationMessage.email:
-                kInvalidEmailError,
+                ValidationMessage.email: kInvalidEmailError,
                 'unique': 'This email is already in use',
               },
             ),
@@ -69,22 +71,20 @@ class _SignInFormState extends State<SignInForm> {
                   children: [
                     ReactiveCheckbox(
                       formControlName: LoginField.CHECKBOX.name,
-                        materialTapTargetSize:
-                        MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: const VisualDensity(
-                            horizontal: -4, vertical: -4),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(Sizes.w5)),
-                        ),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity:
+                          const VisualDensity(horizontal: -4, vertical: -4),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(Sizes.w5)),
+                    ),
                     customVerticalDivider(width: Sizes.w5),
                     Text('Stay logged in',
-                        style: TextStyle(
-                            color: Colors.grey, fontSize: Sizes.w15))
+                        style:
+                            TextStyle(color: Colors.grey, fontSize: Sizes.w15))
                   ],
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       /*Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -95,25 +95,41 @@ class _SignInFormState extends State<SignInForm> {
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: Sizes.w15,
-                            fontWeight: FontWeight.bold))
-                ),
-
+                            fontWeight: FontWeight.bold))),
               ],
             ),
             SizedBox(
               height: 50,
             ),
-            ReactiveFormConsumer(builder: (context, formGroup, child) => ButtonWidgets().customButton(
-                context: context,
-                function: form.valid ? () async {
-                  var result = await LoginController().login(formGroup);
-                  if (result != null) {
-                    proceed();
-                  }
-                } : form.markAllAsTouched,
-                buttonText: loginButtonTxt,
-                buttonHeight: Sizes.h50,
-                buttonColor: AppColors.defaultBlue),),
+            ReactiveFormConsumer(
+              builder: (context, formGroup, child) =>
+                  ButtonWidgets().customButton(
+                      context: context,
+                      function: form.valid
+                          ? () async {
+                              var result =
+                                  await LoginController().login(formGroup);
+                              if (result != null) {
+                                print('phello');
+                                debugPrint('pdhello');
+                                //print(result);
+                                SharedPreferences sp =
+                                    await SharedPreferences.getInstance();
+                                sp.setString('login_response',
+                                    jsonEncode(result.toJson()));
+                                print('saved');
+                                Provider.of<LoginResponseProvider>(context,
+                                        listen: false)
+                                    .set(result);
+                                //print(sp.getString('login_response'));
+                                proceed();
+                              }
+                            }
+                          : form.markAllAsTouched,
+                      buttonText: loginButtonTxt,
+                      buttonHeight: Sizes.h50,
+                      buttonColor: AppColors.defaultBlue),
+            ),
             SizedBox(
               height: 30,
             ),
@@ -122,22 +138,19 @@ class _SignInFormState extends State<SignInForm> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("Don't have an account?",
-                    style: TextStyle(
-                        color: Colors.grey, fontSize: Sizes.w15)),
+                    style: TextStyle(color: Colors.grey, fontSize: Sizes.w15)),
                 customVerticalDivider(),
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                            const IntroScreen()));
+                            builder: (context) => const IntroScreen()));
                   },
                   child: Text("Sign up",
-                      style: TextStyle(
-                          color: Colors.blue, fontSize: Sizes.w15)) ,
+                      style:
+                          TextStyle(color: Colors.blue, fontSize: Sizes.w15)),
                 ),
-
               ],
             ),
           ],
@@ -145,9 +158,9 @@ class _SignInFormState extends State<SignInForm> {
       ),
     );
   }
+
   proceed() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ManagerDashboard())
-    );
+        context, MaterialPageRoute(builder: (context) => ManagerDashboard()));
   }
 }

@@ -6,11 +6,13 @@ import 'package:manager/network/server_config.dart';
 import '../models/login/login_response.dart';
 
 class FetchData {
-
   static Future<LoginResponse?> login(Map<String, dynamic> request) async {
     try {
-      http.Response response = await http.post(Uri.parse(ServerConfig.LOGIN), headers: {'content-type' : 'application/json'}, body: jsonEncode(request));
+      http.Response response = await http.post(Uri.parse(ServerConfig.LOGIN),
+          headers: {'content-type': 'application/json'},
+          body: jsonEncode(request));
       if (response.statusCode == 200) {
+        print(response.body);
         return loginResponseFromJson(response.body);
       } else {
         debugPrint("ResponseStatus:: ${response.statusCode.toString()}");
