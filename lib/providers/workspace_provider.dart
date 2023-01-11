@@ -3,10 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
-import '../models/login/login_response.dart';
 import '../network/server_config.dart';
 
 class WorkspaceProvider extends ChangeNotifier {
+  Map<String, dynamic>? _workspace = null;
+
+  Map<String, dynamic>? get getWorkspace => _workspace;
+
+  void setWorkspace(Map<String, dynamic>? workspace) {
+    _workspace = workspace;
+    notifyListeners();
+  }
+
   Future<Map<String, dynamic>?> fetchWorkspace(
       String workspaceId, String token) async {
     try {

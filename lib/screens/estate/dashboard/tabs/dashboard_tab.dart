@@ -46,7 +46,7 @@ class _DashboardTabState extends State<DashboardTab> {
   @override
   Widget build(BuildContext context) {
     var profile = Provider.of<LoginResponseProvider>(context).loginResponse;
-    List<Workspace> workspaces = profile.user.workspaces;
+    var currentWorkspace = Provider.of<WorkspaceProvider>(context).getWorkspace;
 
     DateTime now = DateTime.now();
     var timeNow = int.parse(DateFormat('kk').format(now));
@@ -95,7 +95,7 @@ class _DashboardTabState extends State<DashboardTab> {
                 Padding(
                   padding: EdgeInsets.only(right: Sizes.w10, left: Sizes.w10),
                   child: Text(
-                    'Chairman, Sage Estate...',
+                    '${currentWorkspace!['workspace']['name']}, ${currentWorkspace!['workspace']['managementCompanyName']}',
                     style: TextStyle(color: Colors.black, fontSize: Sizes.w15),
                   ),
                 ),
@@ -196,7 +196,7 @@ class _DashboardTabState extends State<DashboardTab> {
                               ),
                               customDivider(height: Sizes.h10),
                               Text(
-                                '0',
+                                '${currentWorkspace!['numberOfUnits']}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: Sizes.w25,
@@ -225,7 +225,7 @@ class _DashboardTabState extends State<DashboardTab> {
                               ),
                               customDivider(height: Sizes.h10),
                               Text(
-                                '0',
+                                '${currentWorkspace!['numberOfOccupiedUnits']}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: Sizes.w25,
@@ -330,12 +330,13 @@ class _DashboardTabState extends State<DashboardTab> {
                 return InkWell(
                   onTap: () async {
                     print(workspaces[index].workspaceId);
-                    var new_profile = await Provider.of<WorkspaceProvider>(
-                            context,
-                            listen: false)
-                        .fetchWorkspace(
-                            workspaces[index].workspaceId, profile.accessToken);
-                    print(new_profile!['numberOfUnits']);
+                    var wsp = await Provider.of<WorkspaceProvider>(context,
+                        listen: false);
+                    Map<String, dynamic>? workspace = await wsp.fetchWorkspace(
+                        workspaces[index].workspaceId, profile.accessToken);
+                    wsp.setWorkspace(workspace);
+                    print(workspace!['numberOfUnits']);
+                    Navigator.of(context).pop();
                   },
                   child: ListTile(
                     title: Text("${workspaces[index].name}"),

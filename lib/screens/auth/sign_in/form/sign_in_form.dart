@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:manager/providers/login_response_provider.dart';
+import 'package:manager/providers/workspace_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -111,17 +112,34 @@ class _SignInFormState extends State<SignInForm> {
                                   await LoginController().login(formGroup);
                               if (result != null) {
                                 print('phello');
-                                debugPrint('pdhello');
                                 //print(result);
                                 SharedPreferences sp =
                                     await SharedPreferences.getInstance();
                                 sp.setString('login_response',
                                     jsonEncode(result.toJson()));
-                                print('saved');
-                                Provider.of<LoginResponseProvider>(context,
-                                        listen: false)
-                                    .set(result);
+                                print('login saved');
+                                var profile =
+                                    Provider.of<LoginResponseProvider>(context,
+                                        listen: false);
+                                profile.set(result);
                                 //print(sp.getString('login_response'));
+
+                                //fetch workspace
+                                var pworkspace = Provider.of<WorkspaceProvider>(
+                                    context,
+                                    listen: false);
+                                Map<String, dynamic>? workspace =
+                                    await pworkspace.fetchWorkspace(
+                                        profile.loginResponse.user.workspaces[0]
+                                            .workspaceId,
+                                        profile.loginResponse.accessToken);
+                                pworkspace.setWorkspace(workspace);
+                                print(workspace!['workspace']);
+                                //persist
+                                sp.setString(
+                                    'workspace', jsonEncode(workspace));
+                                print('workspace saved');
+
                                 proceed();
                               }
                             }
