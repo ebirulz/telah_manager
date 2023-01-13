@@ -15,12 +15,43 @@ class WorkspaceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Map<String, dynamic> _propertyUnit = {};
+  Map<String, dynamic> get propertyUnit => _propertyUnit;
+  void setPropertyUnit(Map<String, dynamic> propertyUnit) {
+    _propertyUnit = propertyUnit;
+    notifyListeners();
+  }
+
   Future<Map<String, dynamic>?> fetchWorkspace(
       String workspaceId, String token) async {
     try {
       Response response = await get(
         Uri.parse(
             ServerConfig.BASE_URL + 'account-api/workspaces/${workspaceId}'),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        debugPrint("ResponseStatus:: ${response.statusCode.toString()}");
+        return null;
+      }
+    } on Exception catch (e) {
+      debugPrint("LoginException:: ${e.toString()}");
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchPropertyUnits(
+      String workspaceId, String token) async {
+    try {
+      Response response = await get(
+        Uri.parse(ServerConfig.BASE_URL +
+            'property-api/workspaces/${workspaceId}/property-units?property=3&offset=0&limit=50'),
         headers: {
           'content-type': 'application/json',
           'Authorization': 'Bearer $token',

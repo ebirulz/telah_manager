@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:manager/providers/workspace_provider.dart';
 import 'package:manager/util/colors.dart';
+import 'package:provider/provider.dart';
 import '../../property_unit/manage/property_unit_details_screen.dart';
 
 class PropertyUnitCard extends StatefulWidget {
   final String address;
   final String propertyOccupant;
+  final Map<String, dynamic> propertyUnit;
 
   PropertyUnitCard({
     required this.propertyOccupant,
     required this.address,
+    required this.propertyUnit,
   });
   @override
   _PropertyUnitCardState createState() => _PropertyUnitCardState();
@@ -22,6 +26,9 @@ class _PropertyUnitCardState extends State<PropertyUnitCard> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: GestureDetector(
         onTap: () {
+          Provider.of<WorkspaceProvider>(context, listen: false)
+              .setPropertyUnit(widget.propertyUnit);
+
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -47,21 +54,27 @@ class _PropertyUnitCardState extends State<PropertyUnitCard> {
                           borderRadius: BorderRadius.circular(22.0),
                         ),
                         child: Center(
-                          child: Icon(
-                            Iconsax.house_2,
-                            color: Colors.white,
-                            size: 25,
-                          )
-                        ),
+                            child: Icon(
+                          Iconsax.house_2,
+                          color: Colors.white,
+                          size: 25,
+                        )),
                       ),
                       SizedBox(width: 16.0),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(widget.address, style: TextStyle( fontWeight: FontWeight.bold,),),
+                          Text(
+                            widget.address,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           //Text(widget.name),
-                          SizedBox(height: 5,),
+                          SizedBox(
+                            height: 5,
+                          ),
                           Text(widget.propertyOccupant)
                         ],
                       )

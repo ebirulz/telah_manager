@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:manager/util/colors.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../providers/login_response_provider.dart';
+import '../../../../providers/workspace_provider.dart';
 import '../../../../util/size_model.dart';
 import '../../../../util/spacing.dart';
 import '../../property_unit/create/property_address_screen.dart';
@@ -9,7 +12,7 @@ import '../model/properties_model.dart';
 import '../widgets/property_units.dart';
 
 class PropertiesTab extends StatefulWidget {
- const PropertiesTab({Key? key}) : super(key: key);
+  const PropertiesTab({Key? key}) : super(key: key);
 
   @override
   State<PropertiesTab> createState() => _PropertiesTabstate();
@@ -17,11 +20,26 @@ class PropertiesTab extends StatefulWidget {
 
 class _PropertiesTabstate extends State<PropertiesTab> {
   late List PropertyUnits;
+  List _propertyUnits = [];
+
+  getPus() async {
+    final profile = Provider.of<LoginResponseProvider>(context, listen: false)
+        .loginResponse;
+    final prov = Provider.of<WorkspaceProvider>(context, listen: false);
+    String workspaceId = prov.getWorkspace!['workspace']['workspaceId'];
+    //print(profile.accessToken);
+    Map<String, dynamic>? pu =
+        await prov.fetchPropertyUnits(workspaceId, profile.accessToken);
+    setState(() {
+      _propertyUnits = pu!['results'];
+    });
+  }
 
   @override
   void initState() {
     PropertyUnits = getPropertyUnits();
     super.initState();
+    getPus();
   }
 
   @override
@@ -30,7 +48,7 @@ class _PropertiesTabstate extends State<PropertiesTab> {
     Sizes().widthSizeCalc(context);
     return SafeArea(
       child: Scaffold(
-        body: ListView(
+        body: Column(
           children: [
             SizedBox(
               height: 30,
@@ -39,10 +57,8 @@ class _PropertiesTabstate extends State<PropertiesTab> {
               margin: FxSpacing.fromLTRB(19, 10, 10, 0),
               child: Text(
                 "Search for Property Units",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: Sizes.w20
-                ),
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w20),
               ),
             ),
             Container(
@@ -53,10 +69,11 @@ class _PropertiesTabstate extends State<PropertiesTab> {
                     child: Container(
                       padding: FxSpacing.vertical(4),
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border(
-                            bottom: BorderSide(color: AppColors.borderLine, width: .7),
-                          ),
+                        color: Colors.white,
+                        border: Border(
+                          bottom: BorderSide(
+                              color: AppColors.borderLine, width: .7),
+                        ),
                       ),
                       child: Row(
                         children: [
@@ -72,7 +89,6 @@ class _PropertiesTabstate extends State<PropertiesTab> {
                             child: Container(
                               margin: FxSpacing.left(12),
                               child: TextFormField(
-
                                 decoration: InputDecoration(
                                   fillColor: AppColors.stepperBg,
                                   hintText: "Search for Properties and People",
@@ -81,7 +97,8 @@ class _PropertiesTabstate extends State<PropertiesTab> {
                                   focusedBorder: InputBorder.none,
                                   isDense: true,
                                 ),
-                                textCapitalization: TextCapitalization.sentences,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
                               ),
                             ),
                           ),
@@ -89,12 +106,13 @@ class _PropertiesTabstate extends State<PropertiesTab> {
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
-            SizedBox(height: 15,),
-            SingleChildScrollView(
+            SizedBox(
+              height: 15,
+            ),
+            /* SingleChildScrollView(
               child: Column(
                 children: [
                   PropertyUnitCard(
@@ -107,13 +125,29 @@ class _PropertiesTabstate extends State<PropertiesTab> {
                   ),
                 ],
               ),
-            )
+            ) */
+            Expanded(
+              child: ListView.builder(
+                itemCount: _propertyUnits.length,
+                itemBuilder: (context, index) {
+                  return PropertyUnitCard(
+                    address:
+                        '[${_propertyUnits[index]['billingGroup']['name']}] ${_propertyUnits[index]['houseNumber']} ${_propertyUnits[index]['streetName']}',
+                    propertyOccupant:
+                        '${_propertyUnits[index]['activeTenures'][0]['primaryResidents'][0]['displayName']}',
+                    propertyUnit: _propertyUnits[index],
+                  );
+                },
+              ),
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddPropertyAddressScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AddPropertyAddressScreen()));
           },
           elevation: 0,
           backgroundColor: AppColors.defaultBlue,
