@@ -40,7 +40,7 @@ Widget PropertyOwner(BuildContext context,{String? name, String? percentage, Str
         },
         child: Container(
             margin: EdgeInsets.only(left: 20),
-            width: 200,
+            width: 270,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
