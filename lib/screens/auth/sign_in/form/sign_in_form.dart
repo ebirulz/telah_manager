@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../controller/login_controller.dart';
 import '../../../../util/colors.dart';
 import '../../../../util/constant.dart';
+import '../../../../util/functions.dart';
 import '../../../../util/size_model.dart';
 import '../../../../util/strings.dart';
 import '../../../../widgets/custom_buttons.dart';
@@ -123,6 +124,23 @@ class _SignInFormState extends State<SignInForm> {
                                         listen: false);
                                 profile.set(result);
                                 //print(sp.getString('login_response'));
+
+                                Map<String, dynamic> auth = {
+                                  'firebaseToken': '',
+                                  'refresh_token':
+                                      profile.loginResponse.refreshToken,
+                                  'access_token':
+                                      profile.loginResponse.accessToken,
+                                  'expires_in': profile.loginResponse.expiresIn
+                                      .toString(),
+                                  'expires_at':
+                                      profile.loginResponse.expiresAt.toString()
+                                };
+                                profile.setAuth(auth);
+
+                                prettyPrint(auth);
+                                sp.setString('auth', jsonEncode(auth));
+                                print('auth saved');
 
                                 //fetch workspace
                                 var pworkspace = Provider.of<WorkspaceProvider>(
