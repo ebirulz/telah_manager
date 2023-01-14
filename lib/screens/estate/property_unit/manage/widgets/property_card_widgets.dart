@@ -7,7 +7,8 @@ import '../property_owner_screen.dart';
 import '../tenant_details_screen.dart';
 import '../transaction_details_screen.dart';
 
-Widget PropertyOwner(BuildContext context,{String? name, String? percentage, String? abv, String? email}){
+Widget PropertyOwner(BuildContext context,
+    {String? name, String? percentage, String? abv, String? email}) {
   return Row(
     verticalDirection: VerticalDirection.up,
     children: [
@@ -21,22 +22,20 @@ Widget PropertyOwner(BuildContext context,{String? name, String? percentage, Str
         ),
         child: Align(
           alignment: Alignment.center,
-          child: Text(abv!,
+          child: Text(
+            abv!,
             textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 18,
-                color: Colors.white
-            ),
+            style: TextStyle(fontSize: 18, color: Colors.white),
           ),
         ),
       ),
       InkWell(
-        onTap: (){
+        onTap: () {
           Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => UnitPropertyOwnerScreen(),
-                                  )
-                              );
+              context,
+              MaterialPageRoute(
+                builder: (context) => UnitPropertyOwnerScreen(),
+              ));
         },
         child: Container(
             margin: EdgeInsets.only(left: 20),
@@ -52,19 +51,22 @@ Widget PropertyOwner(BuildContext context,{String? name, String? percentage, Str
                       overflow: TextOverflow.clip,
                       softWrap: true,
                       style: TextStyle(
-                          fontWeight:FontWeight.bold,
-                          fontSize: Sizes.w16
-                      ),
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w16),
                     ),
                     Container(
                       decoration: BoxDecoration(
                           //color: AppColors.errorText.withOpacity(0.3),
                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                        border: Border.all(color: AppColors.borderLine.withOpacity(0.3))
-                      ),
+                          border: Border.all(
+                              color: AppColors.borderLine.withOpacity(0.3))),
                       child: Padding(
                         padding: EdgeInsets.all(5),
-                        child: Text(percentage!, style: TextStyle(color: AppColors.defaultBlue, fontWeight: FontWeight.bold),),
+                        child: Text(
+                          percentage!,
+                          style: TextStyle(
+                              color: AppColors.defaultBlue,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     )
                   ],
@@ -74,18 +76,16 @@ Widget PropertyOwner(BuildContext context,{String? name, String? percentage, Str
                   maxLines: 3,
                   overflow: TextOverflow.clip,
                   softWrap: true,
-                  style: TextStyle(
-                  ),
+                  style: TextStyle(),
                 ),
               ],
-            )
-        ),
+            )),
       )
     ],
   );
 }
 
-Widget UnitUnpaidBill(){
+Widget UnitUnpaidBill(double amount) {
   return Row(
     verticalDirection: VerticalDirection.up,
     children: [
@@ -104,7 +104,7 @@ Widget UnitUnpaidBill(){
         ),
       ),
       InkWell(
-        onTap: (){
+        onTap: () {
           /*Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => LedgerDetailsScreen(),
@@ -125,18 +125,20 @@ Widget UnitUnpaidBill(){
                       overflow: TextOverflow.clip,
                       softWrap: true,
                       style: TextStyle(
-                          fontWeight:FontWeight.bold,
-                          fontSize: Sizes.w20
-                      ),
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w20),
                     ),
                     Container(
                       decoration: BoxDecoration(
                           color: AppColors.errorText.withOpacity(0.3),
-                          borderRadius: BorderRadius.all(Radius.circular(20))
-                      ),
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
                       child: Padding(
                         padding: EdgeInsets.all(5),
-                        child: Text("N1,000,000", style: TextStyle(color: AppColors.errorText, fontWeight: FontWeight.bold),),
+                        child: Text(
+                          "N${amount}",
+                          style: TextStyle(
+                              color: AppColors.errorText,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     )
                   ],
@@ -150,19 +152,17 @@ Widget UnitUnpaidBill(){
                   maxLines: 3,
                   overflow: TextOverflow.clip,
                   softWrap: true,
-                  style: TextStyle(
-                    fontSize: 13
-                  ),
+                  style: TextStyle(fontSize: 13),
                 ),
               ],
-            )
-        ),
+            )),
       )
     ],
   );
 }
 
-Widget Tenants(BuildContext context,{String? abv, String? name, String? email, String? percentage}){
+Widget Tenants(BuildContext context,
+    {String? abv, String? name, String? email, String? percentage}) {
   return Row(
     verticalDirection: VerticalDirection.up,
     children: [
@@ -177,22 +177,20 @@ Widget Tenants(BuildContext context,{String? abv, String? name, String? email, S
         ),
         child: Align(
           alignment: Alignment.center,
-          child: Text(abv!,
+          child: Text(
+            abv!,
             textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 18,
-                color: Colors.white
-            ),
+            style: TextStyle(fontSize: 18, color: Colors.white),
           ),
         ),
       ),
       InkWell(
-        onTap: (){
+        onTap: () {
           Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => TenantDetailsScreen(),
-                                  )
-                              );
+              context,
+              MaterialPageRoute(
+                builder: (context) => TenantDetailsScreen(),
+              ));
         },
         child: Container(
             margin: EdgeInsets.only(left: 20),
@@ -208,19 +206,22 @@ Widget Tenants(BuildContext context,{String? abv, String? name, String? email, S
                       overflow: TextOverflow.clip,
                       softWrap: true,
                       style: TextStyle(
-                          fontWeight:FontWeight.bold,
-                          fontSize: Sizes.w16
-                      ),
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w16),
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        //color: AppColors.errorText.withOpacity(0.3),
+                          //color: AppColors.errorText.withOpacity(0.3),
                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                          border: Border.all(color: AppColors.borderLine.withOpacity(0.3))
-                      ),
+                          border: Border.all(
+                              color: AppColors.borderLine.withOpacity(0.3))),
                       child: Padding(
                         padding: EdgeInsets.all(5),
-                        child: Text(percentage!, style: TextStyle(color: AppColors.defaultBlue, fontWeight: FontWeight.bold),),
+                        child: Text(
+                          percentage!,
+                          style: TextStyle(
+                              color: AppColors.defaultBlue,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     )
                   ],
@@ -230,48 +231,47 @@ Widget Tenants(BuildContext context,{String? abv, String? name, String? email, S
                   maxLines: 3,
                   overflow: TextOverflow.clip,
                   softWrap: true,
-                  style: TextStyle(
-                  ),
+                  style: TextStyle(),
                 ),
               ],
-            )
-        ),
+            )),
       )
     ],
   );
 }
 
-UnitTransaction( BuildContext context) {
+UnitTransaction(BuildContext context, Map<String, dynamic> transaction) {
   return Padding(
     padding: EdgeInsets.only(left: Sizes.w10, right: Sizes.w10, top: Sizes.w13),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         InkWell(
-          onTap: (){
+          onTap: () {
+            print(transaction);
             Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => PropertyTransactionDetailsScreen(),
-                                  )
-                              );
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PropertyTransactionDetailsScreen(),
+                ));
           },
           child: Row(
             children: [
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Water Bill',
+                    '${transaction['ledgerType'] == 'AMENITY' ? (transaction['amenityBill']?['amenity']['name']) : transaction['ledgerType'] == 'PROJECT' ? transaction['project']['name'] : ''}',
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: Sizes.w17,
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'January 2022',
-                    style: TextStyle(color: AppColors.borderLine, fontSize: Sizes.w15),
+                    '${transaction['effectiveAt']}',
+                    style: TextStyle(
+                        color: AppColors.borderLine, fontSize: Sizes.w15),
                   ),
                 ],
               ),
@@ -281,17 +281,19 @@ UnitTransaction( BuildContext context) {
         Container(
           padding: EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: AppColors.borderLine.withOpacity(0.3),
-            borderRadius: BorderRadius.all(Radius.circular(5))
+              color: AppColors.borderLine.withOpacity(0.3),
+              borderRadius: BorderRadius.all(Radius.circular(5))),
+          child: Text(
+            'N${transaction['amount']}',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          child: Text('N2000', style: TextStyle(fontWeight: FontWeight.bold),),
         )
       ],
     ),
   );
 }
 
-Widget PropertyOwnerUnpaidBill(){
+Widget PropertyOwnerUnpaidBill() {
   return Row(
     verticalDirection: VerticalDirection.up,
     children: [
@@ -306,17 +308,15 @@ Widget PropertyOwnerUnpaidBill(){
         ),
         child: Align(
           alignment: Alignment.center,
-          child: Text("SC",
+          child: Text(
+            "SC",
             textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 18,
-                color: Colors.white
-            ),
+            style: TextStyle(fontSize: 18, color: Colors.white),
           ),
         ),
       ),
       InkWell(
-        onTap: (){
+        onTap: () {
           /*Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => LedgerDetailsScreen(),
@@ -336,7 +336,6 @@ Widget PropertyOwnerUnpaidBill(){
                       "Service Charge",
                       overflow: TextOverflow.clip,
                       softWrap: true,
-
                     ),
                   ],
                 ),
@@ -346,14 +345,13 @@ Widget PropertyOwnerUnpaidBill(){
                   overflow: TextOverflow.clip,
                   softWrap: true,
                   style: TextStyle(
-                      fontWeight:FontWeight.bold,
-                      fontSize: Sizes.w16,
+                    fontWeight: FontWeight.bold,
+                    fontSize: Sizes.w16,
                     color: AppColors.errorText,
                   ),
                 ),
               ],
-            )
-        ),
+            )),
       )
     ],
   );

@@ -27,9 +27,12 @@ class _PropertiesTabstate extends State<PropertiesTab> {
         .loginResponse;
     final prov = Provider.of<WorkspaceProvider>(context, listen: false);
     String workspaceId = prov.getWorkspace!['workspace']['workspaceId'];
-    //print(profile.accessToken);
-    Map<String, dynamic>? pu =
-        await prov.fetchPropertyUnits(workspaceId, profile.accessToken);
+    String propertyUnitId =
+        prov.getWorkspace!['latestProperty']['id'].toString();
+
+    Map<String, dynamic>? pu = await prov.fetchPropertyUnits(
+        workspaceId, propertyUnitId, profile.accessToken);
+
     setState(() {
       _propertyUnits = pu!['results'];
     });

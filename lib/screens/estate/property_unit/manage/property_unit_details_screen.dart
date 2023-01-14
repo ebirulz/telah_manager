@@ -4,11 +4,16 @@ import 'package:manager/screens/estate/property_unit/manage/widgets/option_menu_
 import 'package:manager/screens/estate/property_unit/manage/widgets/property_card_widgets.dart';
 import 'package:manager/widgets/app_bar.dart';
 import 'package:provider/provider.dart';
+import '../../../../providers/login_response_provider.dart';
 import '../../../../util/colors.dart';
+import '../../../../util/functions.dart';
 import '../../../../util/size_model.dart';
 
 class PropertyUnitDetailsScreen extends StatefulWidget {
-  const PropertyUnitDetailsScreen({Key? key}) : super(key: key);
+  const PropertyUnitDetailsScreen({Key? key, this.propertyUnit})
+      : super(key: key);
+
+  final Map<String, dynamic>? propertyUnit;
 
   @override
   State<PropertyUnitDetailsScreen> createState() =>
@@ -18,9 +23,43 @@ class PropertyUnitDetailsScreen extends StatefulWidget {
 class _PropertyUnitDetailsScreenState extends State<PropertyUnitDetailsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  List _propertyUnit = [
+    {'totalOutstanding': 0.00}
+  ];
+  List _transactions = [];
+
+  getPu() async {
+    final profile = Provider.of<LoginResponseProvider>(context, listen: false)
+        .loginResponse;
+    final prov = Provider.of<WorkspaceProvider>(context, listen: false);
+
+    Map<String, dynamic>? pu = await prov.fetchPropertyUnit(
+        widget.propertyUnit!['property']['workspaceId'],
+        widget.propertyUnit!['id'],
+        profile.accessToken);
+    //prettyPrint(pu!['results'][0]);
+    setState(() {
+      _propertyUnit = pu!['results'];
+    });
+  }
+
+  getPuTransactions() async {
+    final profile = Provider.of<LoginResponseProvider>(context, listen: false)
+        .loginResponse;
+    final prov = Provider.of<WorkspaceProvider>(context, listen: false);
+
+    Map<String, dynamic>? pu = await prov.fetchPropertyUnitTransactions(
+        widget.propertyUnit!['id'], profile.accessToken);
+    //prettyPrint(pu!['results'][0]);
+    setState(() {
+      _transactions = pu!['results'];
+    });
+  }
 
   @override
   void initState() {
+    getPu();
+    getPuTransactions();
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
@@ -37,14 +76,17 @@ class _PropertyUnitDetailsScreenState extends State<PropertyUnitDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
+    //prettyPrint(widget.propertyUnit);
     return Consumer<WorkspaceProvider>(builder: (context, wp, _) {
       Map<String, dynamic> propertyUnit = wp.propertyUnit;
-      print(propertyUnit['activeTenures']);
+
+      Map<String, dynamic> owner = propertyUnit!['activeTenures'][0];
       List tenures = propertyUnit['activeTenures'];
+
       List tenants = tenures.length > 1
-          ? propertyUnit!['activeTenures'][1]['primaryResidents']
+          ? tenures.where((element) => element['type'] != 'UNIT_OWNER').toList()
           : [];
-      print(tenants);
+
       return Scaffold(
         appBar: AppBarWidget().appbar(
             context: context,
@@ -96,7 +138,8 @@ class _PropertyUnitDetailsScreenState extends State<PropertyUnitDetailsScreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            UnitUnpaidBill(),
+                            UnitUnpaidBill(
+                                _propertyUnit[0]['totalOutstanding']),
                             SizedBox(
                               height: 20,
                             ),
@@ -118,7 +161,7 @@ class _PropertyUnitDetailsScreenState extends State<PropertyUnitDetailsScreen>
                               height: 10,
                             ),
                             Text(
-                              "${propertyUnit['activeTenures'][0]['primaryResidents'][0]['displayName']}",
+                              "${propertyUnit['billingGroup']['name']}",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: Sizes.w16),
@@ -132,12 +175,12 @@ class _PropertyUnitDetailsScreenState extends State<PropertyUnitDetailsScreen>
                             ),
                             PropertyOwner(context,
                                 abv:
-                                    "${getInitials(propertyUnit!['activeTenures'][0]['primaryResidents'][0]['displayName'])}",
+                                    "${getInitials(owner['primaryResidents'][0]['displayName'])}",
                                 name:
-                                    "${propertyUnit!['activeTenures'][0]['primaryResidents'][0]['displayName']}",
+                                    "${owner['primaryResidents'][0]['displayName']}",
                                 percentage: "50%",
                                 email:
-                                    "${propertyUnit!['activeTenures'][0]['primaryResidents'][0]['phoneNumber']}"),
+                                    "${owner['primaryResidents'][0]['phoneNumber']}"),
                             SizedBox(
                               height: 20,
                             ),
@@ -152,29 +195,36 @@ class _PropertyUnitDetailsScreenState extends State<PropertyUnitDetailsScreen>
                                       return Tenants(
                                         context,
                                         abv:
-                                            "${getInitials(tenants[index]['displayName'])}",
+                                            "${getInitials(tenants[index]['primaryResidents'][0]['displayName'])}",
                                         name:
-                                            "${tenants[index]['displayName']}",
-                                        percentage: "50%",
+                                            "${tenants[index]['primaryResidents'][0]['displayName']}",
+                                        percentage:
+                                            "${tenants[index]['serviceChargePercentage']}%",
                                         email:
-                                            "${tenants[index]['phoneNumber']}",
+                                            "${tenants[index]['primaryResidents'][0]['phoneNumber']}",
                                       );
                                     })),
                           ],
                         ),
                       ),
                       Container(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 10,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: _transactions.length,
+                                itemBuilder: (context, index) {
+                                  return UnitTransaction(
+                                      context, _transactions[index]);
+                                },
                               ),
-                              UnitTransaction(context),
-                              UnitTransaction(context),
-                              UnitTransaction(context),
-                            ],
-                          ),
+                            ),
+                            /* UnitTransaction(context),
+                            UnitTransaction(context), */
+                          ],
                         ),
                       ),
                     ],

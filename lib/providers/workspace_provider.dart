@@ -47,11 +47,59 @@ class WorkspaceProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>?> fetchPropertyUnits(
-      String workspaceId, String token) async {
+      String workspaceId, String propertyUnitId, String token) async {
     try {
       Response response = await get(
         Uri.parse(ServerConfig.BASE_URL +
-            'property-api/workspaces/${workspaceId}/property-units?property=3&offset=0&limit=50'),
+            'property-api/workspaces/${workspaceId}/property-units?property=${propertyUnitId}&offset=0&limit=50'),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        debugPrint("ResponseStatus:: ${response.statusCode.toString()}");
+        return null;
+      }
+    } on Exception catch (e) {
+      debugPrint("LoginException:: ${e.toString()}");
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchPropertyUnit(
+      String workspaceId, int propertyUnitId, String token) async {
+    try {
+      Response response = await get(
+        Uri.parse(ServerConfig.BASE_URL +
+            'ledger-api/workspaces/${workspaceId}/tenure-ledgers?propertyUnit=${propertyUnitId}&minimumOutstanding=0.01&offset=0&limit=50'),
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        debugPrint("ResponseStatus:: ${response.statusCode.toString()}");
+        return null;
+      }
+    } on Exception catch (e) {
+      debugPrint("LoginException:: ${e.toString()}");
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchPropertyUnitTransactions(
+      int propertyUnitId, String token) async {
+    try {
+      Response response = await get(
+        Uri.parse(ServerConfig.BASE_URL +
+            'ledger-api/property-units/${propertyUnitId}/transactions?offset=0&limit=50'),
         headers: {
           'content-type': 'application/json',
           'Authorization': 'Bearer $token',

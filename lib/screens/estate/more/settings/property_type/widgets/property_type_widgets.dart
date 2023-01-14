@@ -4,9 +4,13 @@ import '../../../../../../util/size_model.dart';
 import '../../../../property_unit/manage/property_unit_details_screen.dart';
 import '../details_screen.dart';
 
-Widget PropertyTypeList(BuildContext context, {String? propertyType, String? unitNumber, String? serviceCharge, String? billingCycle}){
+Widget PropertyTypeList(BuildContext context,
+    {String? propertyType,
+    String? unitNumber,
+    String? serviceCharge,
+    String? billingCycle}) {
   return InkWell(
-    onTap: (){
+    onTap: () {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -31,14 +35,25 @@ Widget PropertyTypeList(BuildContext context, {String? propertyType, String? uni
                     children: [
                       Row(
                         children: [
-                          Text(propertyType!, style: TextStyle( fontWeight: FontWeight.bold, fontSize: Sizes.w18),),
-                          SizedBox(width: 15,),
+                          Text(
+                            propertyType!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: Sizes.w18),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
                           Text(unitNumber!),
                         ],
                       ),
-                      SizedBox(height: 5,),
+                      SizedBox(
+                        height: 5,
+                      ),
                       Text(serviceCharge!),
-                      SizedBox(height: 5,),
+                      SizedBox(
+                        height: 5,
+                      ),
                       Text(billingCycle!),
                     ],
                   )
@@ -62,9 +77,10 @@ Widget PropertyTypeList(BuildContext context, {String? propertyType, String? uni
   );
 }
 
-Widget PropertyUnitList(BuildContext context, {String? address, String? name, String? abv}){
+Widget PropertyUnitList(BuildContext context,
+    {String? address, String? name, String? abv}) {
   return InkWell(
-    onTap: (){
+    onTap: () {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -87,8 +103,14 @@ Widget PropertyUnitList(BuildContext context, {String? address, String? name, St
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(address!, style: TextStyle( fontWeight: FontWeight.bold, fontSize: Sizes.w18),),
-                      SizedBox(height: 5,),
+                      Text(
+                        address!,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: Sizes.w18),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
                       Text(name!),
                     ],
                   )
@@ -112,7 +134,8 @@ Widget PropertyUnitList(BuildContext context, {String? address, String? name, St
   );
 }
 
-Widget PropertyServiceList(BuildContext context, {String? amount, String? name, String? cycle}){
+Widget PropertyServiceList(BuildContext context,
+    {String? amount, String? name, String? cycle}) {
   return Container(
     padding: EdgeInsets.only(left: 16, right: 16, bottom: 5),
     //height: 62.0,
@@ -128,10 +151,18 @@ Widget PropertyServiceList(BuildContext context, {String? amount, String? name, 
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name!, style: TextStyle( fontWeight: FontWeight.bold, fontSize: Sizes.w18),),
-                    SizedBox(height: 5,),
+                    Text(
+                      name!,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w18),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Text(amount!),
-                    SizedBox(height: 5,),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Text(cycle!),
                   ],
                 )

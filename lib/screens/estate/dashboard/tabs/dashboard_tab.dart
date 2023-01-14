@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../util/assets.dart';
 import '../../../../util/colors.dart';
+import '../../../../util/functions.dart';
 import '../../../../widgets/custom_dividers.dart';
 import '../widgets/dashboard_widgets.dart';
 import '../widgets/custom_widgets.dart';
@@ -335,7 +336,7 @@ class _DashboardTabState extends State<DashboardTab> {
                     Map<String, dynamic>? workspace = await wsp.fetchWorkspace(
                         workspaces[index].workspaceId, profile.accessToken);
                     wsp.setWorkspace(workspace);
-                    print(workspace!['numberOfUnits']);
+                    prettyPrint(workspace!);
                     Navigator.of(context).pop();
                   },
                   child: ListTile(

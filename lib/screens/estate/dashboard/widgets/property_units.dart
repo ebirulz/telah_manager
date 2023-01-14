@@ -32,7 +32,8 @@ class _PropertyUnitCardState extends State<PropertyUnitCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PropertyUnitDetailsScreen(),
+              builder: (context) =>
+                  PropertyUnitDetailsScreen(propertyUnit: widget.propertyUnit),
             ),
           );
         },
