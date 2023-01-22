@@ -89,13 +89,20 @@ class _InvitedUserDetailsScreenState extends State<InvitedUserDetailsScreen> {
           SizedBox(
             height: 20,
           ),
-          Text("Role"),
+          Text("Roles"),
           SizedBox(
             height: 10,
           ),
-          Text(
-            "${widget.userModel.roles[0]['name']}",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget.userModel.roles.length,
+            itemBuilder: (context, index) {
+              return Text(
+                "- ${widget.userModel.roles[index]['name']}",
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),
+              );
+            },
           ),
         ],
       ),

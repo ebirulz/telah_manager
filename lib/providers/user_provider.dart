@@ -16,8 +16,6 @@ class UserProvider extends ChangeNotifier {
     var res = await Api.getData(
         'account-api/workspaces/${workspaceId}/members?pending=${state}&offset=0&limit=50');
 
-    //_users = res!['results'];
-
     if (!state) {
       _users = [];
       res!['results'].forEach((v) {
