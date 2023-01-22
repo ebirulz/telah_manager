@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 
-import '../network/server_config.dart';
 import '../util/api.dart';
 
 class WorkspaceProvider extends ChangeNotifier {

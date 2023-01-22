@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:manager/providers/user_provider.dart';
 import 'package:manager/screens/estate/users/invite/invite_member_screen.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
+import '../../../../models/user_model.dart';
+import '../../../../providers/login_response_provider.dart';
+import '../../../../providers/workspace_provider.dart';
 import '../../../../util/colors.dart';
 import '../../../../util/size_model.dart';
 import '../../../../util/spacing.dart';
 import '../widgets/users_widget.dart';
-
 
 class UsersTab extends StatefulWidget {
   const UsersTab({Key? key}) : super(key: key);
@@ -14,16 +18,30 @@ class UsersTab extends StatefulWidget {
   State<UsersTab> createState() => _UsersTabState();
 }
 
-class _UsersTabState extends State<UsersTab> with SingleTickerProviderStateMixin {
-
+class _UsersTabState extends State<UsersTab>
+    with SingleTickerProviderStateMixin {
   String? selectedValue;
 
   late TabController _tabController;
+
+  getUsers() async {
+    final profile = Provider.of<LoginResponseProvider>(context, listen: false)
+        .loginResponse;
+    final prov = Provider.of<WorkspaceProvider>(context, listen: false);
+    String workspaceId = prov.getWorkspace!['workspace']['workspaceId'];
+    Provider.of<UserProvider>(context, listen: false)
+        .fetch(workspaceId, profile.accessToken, state: false)
+        .then((value) {
+      Provider.of<UserProvider>(context, listen: false)
+          .fetch(workspaceId, profile.accessToken, state: true);
+    });
+  }
 
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
+    getUsers();
   }
 
   @override
@@ -31,10 +49,15 @@ class _UsersTabState extends State<UsersTab> with SingleTickerProviderStateMixin
     super.dispose();
     _tabController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     Sizes().heightSizeCalc(context);
     Sizes().widthSizeCalc(context);
+
+    List<UserModel> users = Provider.of<UserProvider>(context).get;
+    List<UserModel> invited = Provider.of<UserProvider>(context).invited;
+
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -42,16 +65,18 @@ class _UsersTabState extends State<UsersTab> with SingleTickerProviderStateMixin
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Text(
                 "Users",
                 textAlign: TextAlign.left,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: Sizes.w20
-                ),
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w20),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Container(
                 height: 45,
                 decoration: BoxDecoration(
@@ -92,74 +117,98 @@ class _UsersTabState extends State<UsersTab> with SingleTickerProviderStateMixin
                   children: [
                     Container(
                       margin: EdgeInsets.only(top: 15),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              //margin: FxSpacing.fromLTRB(10, 10, 15, 0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      padding: FxSpacing.vertical(4),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border(
-                                          bottom: BorderSide(color: AppColors.borderLine, width: .7),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: FxSpacing.left(12),
-                                            child: Icon(
-                                              MdiIcons.magnify,
-                                              color: AppColors.stepperBg,
-                                              size: 28,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              margin: FxSpacing.left(12),
-                                              child: TextFormField(
-
-                                                decoration: InputDecoration(
-                                                  fillColor: AppColors.stepperBg,
-                                                  hintText: "Search for users",
-                                                  border: InputBorder.none,
-                                                  enabledBorder: InputBorder.none,
-                                                  focusedBorder: InputBorder.none,
-                                                  isDense: true,
-                                                ),
-                                                textCapitalization: TextCapitalization.sentences,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            //margin: FxSpacing.fromLTRB(10, 10, 15, 0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: FxSpacing.vertical(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border(
+                                        bottom: BorderSide(
+                                            color: AppColors.borderLine,
+                                            width: .7),
                                       ),
                                     ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          margin: FxSpacing.left(12),
+                                          child: Icon(
+                                            MdiIcons.magnify,
+                                            color: AppColors.stepperBg,
+                                            size: 28,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            margin: FxSpacing.left(12),
+                                            child: TextFormField(
+                                              decoration: InputDecoration(
+                                                fillColor: AppColors.stepperBg,
+                                                hintText: "Search for users",
+                                                border: InputBorder.none,
+                                                enabledBorder: InputBorder.none,
+                                                focusedBorder: InputBorder.none,
+                                                isDense: true,
+                                              ),
+                                              textCapitalization:
+                                                  TextCapitalization.sentences,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 20,),
-                            UsersWidget(name: 'John Doe', email: 'john@gmail.com', role: 'Admin',),
-                            UsersWidget(name: 'Ebimobowei Okpongu', email: 'ebi@gmail.com', role: 'Admin',),
-
-                          ],
-                        ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Provider.of<UserProvider>(context).loading
+                              ? Center(child: CircularProgressIndicator())
+                              : Expanded(
+                                  child: ListView.builder(
+                                    itemCount: users.length,
+                                    itemBuilder: (context, index) {
+                                      return UsersWidget(
+                                        name: users[index].name,
+                                        email: users[index].email,
+                                        role: users[index].roles[0]['name'],
+                                        userModel: users[index],
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ],
                       ),
                     ),
                     Container(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            UsersWidget(name: 'Denis Power', email: 'john@gmail.com', role: 'Admin',),
-                            UsersWidget(name: 'Ebimobowei Okpongu', email: 'ebi@gmail.com', role: 'Admin',),
-                          ],
-                        ),
+                      child: Column(
+                        children: [
+                          Provider.of<UserProvider>(context).loading
+                              ? Center(child: CircularProgressIndicator())
+                              : Expanded(
+                                  child: ListView.builder(
+                                    itemCount: invited.length,
+                                    itemBuilder: (context, index) {
+                                      return UsersWidget(
+                                        name: invited[index].name,
+                                        email: invited[index].email,
+                                        role: invited[index].roles[0]['name'],
+                                        userModel: invited[index],
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ],
                       ),
                     ),
                     Container(
@@ -167,9 +216,7 @@ class _UsersTabState extends State<UsersTab> with SingleTickerProviderStateMixin
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-
-                          ],
+                          children: [],
                         ),
                       ),
                     ),
@@ -181,8 +228,10 @@ class _UsersTabState extends State<UsersTab> with SingleTickerProviderStateMixin
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const InviteMemberScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const InviteMemberScreen()));
           },
           elevation: 0,
           backgroundColor: AppColors.defaultBlue,

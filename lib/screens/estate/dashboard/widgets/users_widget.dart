@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../../models/user_model.dart';
 import '../../../../util/colors.dart';
 import '../../users/manage/user_details_screen.dart';
 
 class UsersWidget extends StatefulWidget {
-
   final String name;
   final String email;
   final String role;
+  final UserModel userModel;
 
   UsersWidget({
     required this.name,
     required this.email,
-    required this.role  ,
+    required this.role,
+    required this.userModel,
   });
 
   @override
@@ -30,7 +32,8 @@ class _UsersWidgetState extends State<UsersWidget> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => InvitedUserDetailsScreen(),
+              builder: (context) =>
+                  InvitedUserDetailsScreen(userModel: widget.userModel),
             ),
           );
         },
@@ -53,22 +56,30 @@ class _UsersWidgetState extends State<UsersWidget> {
                         ),
                         child: Center(
                             child: Icon(
-                              Iconsax.user,
-                              color: Colors.white,
-                              size: 25,
-                            )
-                        ),
+                          Iconsax.user,
+                          color: Colors.white,
+                          size: 25,
+                        )),
                       ),
                       SizedBox(width: 16.0),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(widget.name, style: TextStyle( fontWeight: FontWeight.bold,),),
+                          Text(
+                            widget.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           //Text(widget.name),
-                          SizedBox(height: 5,),
+                          SizedBox(
+                            height: 5,
+                          ),
                           Text(widget.email),
-                          SizedBox(height: 5,),
+                          SizedBox(
+                            height: 5,
+                          ),
                           Text(widget.role),
                         ],
                       )
