@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:manager/providers/wallet_provider.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../models/wallet_model.dart';
+import '../../../../providers/workspace_provider.dart';
 import '../../../../util/assets.dart';
 import '../../../../util/colors.dart';
 import '../../../../util/size_model.dart';
@@ -7,7 +11,6 @@ import '../../../../widgets/custom_dividers.dart';
 import '../../wallet/wallet_topup_screen.dart';
 import '../../wallet/wallet_transaction_screen.dart';
 import '../widgets/transaction_card.dart';
-
 
 class WalletTab extends StatefulWidget {
   const WalletTab({Key? key}) : super(key: key);
@@ -17,13 +20,25 @@ class WalletTab extends StatefulWidget {
 }
 
 class _WalletTabState extends State<WalletTab> {
+  bool viewAccountBalance = true;
 
-  bool viewAccountBalance = true ;
+  getWallet() async {
+    final prov = Provider.of<WorkspaceProvider>(context, listen: false);
+    String workspaceId = prov.getWorkspace!['workspace']['workspaceId'];
+    Provider.of<WalletProvider>(context, listen: false).fetch(workspaceId);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getWallet();
+  }
 
   @override
   Widget build(BuildContext context) {
     Sizes().heightSizeCalc(context);
     Sizes().widthSizeCalc(context);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(left: 18, right: 18, top: 34),
@@ -48,21 +63,27 @@ class _WalletTabState extends State<WalletTab> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Recent Transactions',
-                          style: TextStyle(
-                          fontSize: Sizes.w20,
-                          fontWeight: FontWeight.bold,
-                       ),
-                      ),
-                  InkWell(
-                    onTap: (){
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const WalletTransactionScreen()));
-                    },
-                    child: Text('See All', style: TextStyle(
+                  Text(
+                    'Recent Transactions',
+                    style: TextStyle(
                       fontSize: Sizes.w20,
                       fontWeight: FontWeight.bold,
-                        ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const WalletTransactionScreen()));
+                    },
+                    child: Text(
+                      'See All',
+                      style: TextStyle(
+                        fontSize: Sizes.w20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -103,8 +124,10 @@ class _WalletTabState extends State<WalletTab> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const WalletTopUpScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const WalletTopUpScreen()));
         },
         backgroundColor: AppColors.defaultBlue,
         child: const Icon(Icons.add),
@@ -113,6 +136,8 @@ class _WalletTabState extends State<WalletTab> {
   }
 
   Widget _contentOverView() {
+    WalletModel wallet = Provider.of<WalletProvider>(context).get;
+
     return Container(
       height: Sizes.h180,
       width: double.infinity,
@@ -128,8 +153,11 @@ class _WalletTabState extends State<WalletTab> {
               tileMode: TileMode.clamp),
           borderRadius: BorderRadius.all(Radius.circular(Sizes.w20))),
       child: Padding(
-        padding:
-        EdgeInsets.only(top: Sizes.h30, left: Sizes.w20, right: Sizes.w20, bottom: Sizes.h20),
+        padding: EdgeInsets.only(
+            top: Sizes.h30,
+            left: Sizes.w20,
+            right: Sizes.w20,
+            bottom: Sizes.h20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -162,7 +190,7 @@ class _WalletTabState extends State<WalletTab> {
                   ],
                 ),
                 customDivider(height: Sizes.h16),
-                Text('N 4,000,000',
+                Text('N ${wallet.balance}',
                     style: TextStyle(
                         fontSize: Sizes.w25,
                         color: Colors.white,
@@ -196,5 +224,4 @@ class _WalletTabState extends State<WalletTab> {
       ),
     );
   }
-
 }

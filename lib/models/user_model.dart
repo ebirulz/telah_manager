@@ -20,8 +20,8 @@ class UserModel {
   DateTime? acceptedAt;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        name: json["name"],
-        userId: json["userId"],
+        name: json["name"] ?? '',
+        userId: json["userId"] ?? '',
         email: json["email"],
         workspaceModel: WorkspaceModel.fromJson(json['workspace']),
         roles: List.from(json["roles"].map((x) => x)),

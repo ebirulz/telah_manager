@@ -45,7 +45,9 @@ class _InvitedUserDetailsScreenState extends State<InvitedUserDetailsScreen> {
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      getInitials(widget.userModel.name),
+                      getInitials(widget.userModel.name != ''
+                          ? widget.userModel.name
+                          : widget.userModel.email),
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 23, color: Colors.white),
                     ),

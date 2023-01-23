@@ -66,16 +66,20 @@ class Api {
   }
 
   static postData(String link, Map<String, dynamic> data) async {
+    print(ServerConfig.BASE_URL + link);
     try {
       Map<String, dynamic> tokens = await getTokens();
-      Response response = await post(Uri.parse(ServerConfig.LOGIN),
+      //Response response = await post(Uri.parse(ServerConfig.LOGIN),
+      Response response = await post(Uri.parse(ServerConfig.BASE_URL + link),
           headers: {
             'content-type': 'application/json',
             'Authorization': 'Bearer ${tokens['access_token']}',
           },
           body: jsonEncode(data));
+      print(response.body);
       if (response.statusCode == 200) {
-        print(response.body);
+        return jsonDecode(response.body);
+      } else if (response.statusCode == 201) {
         return jsonDecode(response.body);
       } else if (response.statusCode == 401) {
         print("ResponseStatus:: ${response.statusCode.toString()}");

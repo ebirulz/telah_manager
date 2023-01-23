@@ -25,15 +25,13 @@ class _UsersTabState extends State<UsersTab>
   late TabController _tabController;
 
   getUsers() async {
-    final profile = Provider.of<LoginResponseProvider>(context, listen: false)
-        .loginResponse;
     final prov = Provider.of<WorkspaceProvider>(context, listen: false);
     String workspaceId = prov.getWorkspace!['workspace']['workspaceId'];
     Provider.of<UserProvider>(context, listen: false)
-        .fetch(workspaceId, profile.accessToken, state: false)
+        .fetch(workspaceId, state: false)
         .then((value) {
       Provider.of<UserProvider>(context, listen: false)
-          .fetch(workspaceId, profile.accessToken, state: true);
+          .fetch(workspaceId, state: true);
     });
   }
 

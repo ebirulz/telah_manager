@@ -8,7 +8,8 @@ prettyPrint(Map<String, dynamic>? body) {
   debugPrint(prettyprint);
 }
 
-
-  String getInitials(String bank_account_name) => bank_account_name.isNotEmpty
-      ? bank_account_name.trim().split(' ').map((l) => l[0]).take(2).join()
-      : '';
+String getInitials(String bank_account_name) => bank_account_name.isNotEmpty
+    ? bank_account_name.trim().split(' ').length > 1
+        ? bank_account_name.trim().split(' ').map((l) => l[0]).take(2).join()
+        : bank_account_name.trim().substring(0, 2)
+    : bank_account_name.trim().substring(0, 2);

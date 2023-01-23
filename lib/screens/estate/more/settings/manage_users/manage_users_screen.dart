@@ -33,10 +33,10 @@ class _SettingsManageUsersScreenState extends State<SettingsManageUsersScreen>
     final prov = Provider.of<WorkspaceProvider>(context, listen: false);
     String workspaceId = prov.getWorkspace!['workspace']['workspaceId'];
     Provider.of<UserProvider>(context, listen: false)
-        .fetch(workspaceId, profile.accessToken, state: false)
+        .fetch(workspaceId, state: false)
         .then((value) {
       Provider.of<UserProvider>(context, listen: false)
-          .fetch(workspaceId, profile.accessToken, state: true);
+          .fetch(workspaceId, state: true);
     });
   }
 
