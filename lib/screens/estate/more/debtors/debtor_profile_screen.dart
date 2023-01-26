@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:manager/models/debtors_model.dart';
+import 'package:manager/util/functions.dart';
 import 'widgets/debtor_widget.dart';
 import 'widgets/menu_option_widget.dart';
 
@@ -10,13 +12,16 @@ import '../../../../widgets/custom_buttons.dart';
 import '../../../../widgets/custom_dividers.dart';
 
 class DebtorProfileScreen extends StatefulWidget {
-  const DebtorProfileScreen({Key? key}) : super(key: key);
+  const DebtorProfileScreen({Key? key, required this.debtor}) : super(key: key);
+
+  final Debtors debtor;
 
   @override
   State<DebtorProfileScreen> createState() => _DebtorProfileScreenState();
 }
 
-class _DebtorProfileScreenState extends State<DebtorProfileScreen> with SingleTickerProviderStateMixin {
+class _DebtorProfileScreenState extends State<DebtorProfileScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -30,10 +35,14 @@ class _DebtorProfileScreenState extends State<DebtorProfileScreen> with SingleTi
     super.dispose();
     _tabController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget().appbar(context: context,title: 'Elvis Bond',action: debtorActionMenu(context),
+      appBar: AppBarWidget().appbar(
+          context: context,
+          title: widget.debtor.tenure!.primaryResidents[0].displayName,
+          action: debtorActionMenu(context),
           hasAction: true),
       body: SafeArea(
         child: Padding(
@@ -83,67 +92,115 @@ class _DebtorProfileScreenState extends State<DebtorProfileScreen> with SingleTi
                             Center(
                               child: Column(
                                 children: [
-                                  SizedBox(height: 20,),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
                                   Container(
                                     width: Sizes.w80,
                                     height: Sizes.h80,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(Sizes.w10),
+                                      borderRadius:
+                                          BorderRadius.circular(Sizes.w10),
                                       color: AppColors.defaultBlue,
                                     ),
                                     child: Align(
                                       alignment: Alignment.center,
-                                      child: Text("EB",
+                                      child: Text(
+                                        getInitials(widget.debtor.tenure!
+                                            .primaryResidents[0].displayName),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            fontSize: 23,
-                                            color: Colors.white
-                                        ),
+                                            fontSize: 23, color: Colors.white),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 15,),
-                                  Text("Elvis Bond",
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Text(
+                                    widget.debtor.tenure!.primaryResidents[0]
+                                        .displayName,
                                     style: TextStyle(
                                       fontSize: Sizes.w20,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(height: 10,),
-                                  Text("100 Bond Street, Sage Estates"),
-                                  SizedBox(height: 10,),
-                                  Text("+23412345789"),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                      "${widget.debtor.tenure!.propertyUnit.houseNumber} ${widget.debtor.tenure!.propertyUnit.streetName}"),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                      "${widget.debtor.tenure!.primaryResidents[0].phoneNumber}"),
                                 ],
                               ),
                             ),
-                            SizedBox(height: 20,),
+                            SizedBox(
+                              height: 20,
+                            ),
                             Text("Property Unit Type"),
-                            SizedBox(height: 10,),
-                            Text("Duplex", style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),),
-                            SizedBox(height: 20,),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "${widget.debtor.tenure!.propertyUnit.property!.type}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: Sizes.w16),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
                             Text("Address"),
-                            SizedBox(height: 10,),
-                            Text("100 Bond Street", style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),),
-                            SizedBox(height: 20,),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "${widget.debtor.tenure!.propertyUnit.houseNumber} ${widget.debtor.tenure!.propertyUnit.streetName}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: Sizes.w16),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
                             Text("Move-In Date"),
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Text("---"),
-                            SizedBox(height: 20,),
+                            SizedBox(
+                              height: 20,
+                            ),
                             Text("Unpaid Bills"),
                             //PropertyOwnerUnpaidBill(),
-                            SizedBox(height: 30,),
+                            SizedBox(
+                              height: 30,
+                            ),
                             Center(
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ButtonWidgets().utilityButton(context: context, function: print, icon: Iconsax.printer, buttonText: "Print"),
-                                    customVerticalDivider(width: Sizes.w15),
-                                    ButtonWidgets().utilityButton(context: context, function: print, icon: Icons.share_outlined, buttonText: "Share"),
-                                    SizedBox(height: 20,),
-                                  ],
-                                )
-                            ),
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ButtonWidgets().utilityButton(
+                                    context: context,
+                                    function: print,
+                                    icon: Iconsax.printer,
+                                    buttonText: "Print"),
+                                customVerticalDivider(width: Sizes.w15),
+                                ButtonWidgets().utilityButton(
+                                    context: context,
+                                    function: print,
+                                    icon: Icons.share_outlined,
+                                    buttonText: "Share"),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            )),
                           ],
                         ),
                       ),
@@ -152,7 +209,9 @@ class _DebtorProfileScreenState extends State<DebtorProfileScreen> with SingleTi
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
-                            SizedBox(height: 15,),
+                            SizedBox(
+                              height: 15,
+                            ),
                             DebtorPaidBillListWidget(
                               context,
                               amount: "N5,000",
@@ -173,7 +232,8 @@ class _DebtorProfileScreenState extends State<DebtorProfileScreen> with SingleTi
       ),
     );
   }
-  TransactionDialog(){
+
+  TransactionDialog() {
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -182,13 +242,14 @@ class _DebtorProfileScreenState extends State<DebtorProfileScreen> with SingleTi
               topRight: Radius.circular(Sizes.w20),
               topLeft: Radius.circular(Sizes.w20)),
         ),
-        builder: (context){
+        builder: (context) {
           return Wrap(
             children: [
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: Center(
-                  child: Text("Transaction Receipt",
+                  child: Text(
+                    "Transaction Receipt",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: Sizes.h20,
@@ -197,62 +258,130 @@ class _DebtorProfileScreenState extends State<DebtorProfileScreen> with SingleTi
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16),
+                padding: EdgeInsets.only(left: 16, right: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text("Amount Paid"),
-                    SizedBox(height: 10,),
-                    Text("N5,000.00", style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "N5,000.00",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w16),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text("Transaction Type"),
-                    SizedBox(height: 10,),
-                    Text("OFF-APP PAYMENT", style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "OFF-APP PAYMENT",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w16),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text("Payer"),
-                    SizedBox(height: 10,),
-                    Text("ELVIS BOND", style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "ELVIS BOND",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w16),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text("Address"),
-                    SizedBox(height: 10,),
-                    Text("100 BOND STREET", style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "100 BOND STREET",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w16),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text("Purpose"),
-                    SizedBox(height: 10,),
-                    Text("SERVICE CHARGE", style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "SERVICE CHARGE",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w16),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text("Transaction Date"),
-                    SizedBox(height: 10,),
-                    Text("Aug 1, 2022", style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Aug 1, 2022",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w16),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text("Authorized By"),
-                    SizedBox(height: 10,),
-                    Text("ELVIS BOND", style: TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w16),),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "ELVIS BOND",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: Sizes.w16),
+                    ),
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top:20,bottom: 20),
+                padding: EdgeInsets.only(top: 20, bottom: 20),
                 child: Center(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ButtonWidgets().utilityButton(context: context, function: print, icon: Iconsax.trash, buttonText: "Delete"),
-                        customVerticalDivider(width: Sizes.w15),
-                        ButtonWidgets().utilityButton(context: context, function: print, icon: Iconsax.printer, buttonText: "Print"),
-                        customVerticalDivider(width: Sizes.w15),
-                        ButtonWidgets().utilityButton(context: context, function: print, icon: Iconsax.share, buttonText: "Share"),
-                        customVerticalDivider(width: Sizes.w15),
-                      ],
-                    )
-                ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ButtonWidgets().utilityButton(
+                        context: context,
+                        function: print,
+                        icon: Iconsax.trash,
+                        buttonText: "Delete"),
+                    customVerticalDivider(width: Sizes.w15),
+                    ButtonWidgets().utilityButton(
+                        context: context,
+                        function: print,
+                        icon: Iconsax.printer,
+                        buttonText: "Print"),
+                    customVerticalDivider(width: Sizes.w15),
+                    ButtonWidgets().utilityButton(
+                        context: context,
+                        function: print,
+                        icon: Iconsax.share,
+                        buttonText: "Share"),
+                    customVerticalDivider(width: Sizes.w15),
+                  ],
+                )),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
             ],
           );
-        }
-    );
+        });
   }
 }

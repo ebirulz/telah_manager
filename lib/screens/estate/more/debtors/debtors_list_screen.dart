@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:manager/providers/debtors_provider.dart';
+import 'package:provider/provider.dart';
 import 'widgets/debtor_widget.dart';
 
 import '../../../../util/colors.dart';
@@ -11,8 +13,8 @@ class DebtorsListScreen extends StatefulWidget {
   State<DebtorsListScreen> createState() => _DebtorsListScreenState();
 }
 
-class _DebtorsListScreenState extends State<DebtorsListScreen> with SingleTickerProviderStateMixin{
-
+class _DebtorsListScreenState extends State<DebtorsListScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -30,9 +32,12 @@ class _DebtorsListScreenState extends State<DebtorsListScreen> with SingleTicker
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget().appbar(context: context,title: 'Debtors', ),
+      appBar: AppBarWidget().appbar(
+        context: context,
+        title: 'Debtors',
+      ),
       body: Padding(
-        padding: EdgeInsets.only(top: 16,left: 16, right: 16),
+        padding: EdgeInsets.only(top: 16, left: 16, right: 16),
         child: Column(
           children: [
             Container(
@@ -66,23 +71,27 @@ class _DebtorsListScreenState extends State<DebtorsListScreen> with SingleTicker
                 ],
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Expanded(
                 child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    Container(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            TotalDebtorsAmountCardWidget(
-                              context,
-                              title: 'Outstanding (Service Charge)',
-                              amount: "N2,000,000.00",
-                              function: generateStatement(),
-                            ),
-                            SizedBox(height: 15,),
-                            DebtorsListWidget(
+              controller: _tabController,
+              children: [
+                Container(
+                  //child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TotalDebtorsAmountCardWidget(
+                        context,
+                        title: 'Outstanding (Service Charge)',
+                        amount: "N2,000,000.00",
+                        function: generateStatement(),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      /* DebtorsListWidget(
                               address: '100 Bond Street',
                               name: 'Elvis Bond',
                               amount: 'N500,000',
@@ -91,42 +100,62 @@ class _DebtorsListScreenState extends State<DebtorsListScreen> with SingleTicker
                               address: '105 Raji Rasaki Avenue',
                               name: 'Banky W',
                               amount: 'N1,500,000',
-                            ),
-                          ],
-                        ),
+                            ), */
+                      Expanded(
+                        child: ListView.builder(
+                            //shrinkWrap: false,
+                            itemCount:
+                                context.watch<DebtorsProvider>().get.length,
+                            itemBuilder: (context, index) {
+                              return DebtorsListWidget(
+                                address:
+                                    '${context.watch<DebtorsProvider>().get[index].tenure!.propertyUnit.houseNumber} ${context.watch<DebtorsProvider>().get[index].tenure!.propertyUnit.streetName}',
+                                name:
+                                    '${context.watch<DebtorsProvider>().get[index].tenure!.primaryResidents[0].displayName}',
+                                amount:
+                                    'N${context.watch<DebtorsProvider>().get[index].totalOutstanding}',
+                                debtor:
+                                    context.watch<DebtorsProvider>().get[index],
+                              );
+                            }),
                       ),
-                    ),
-                    Container(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            TotalDebtorsAmountCardWidget(
-                              context,
-                              title: 'Outstanding (Project)',
-                              amount: "N50,000.00",
-                              function: generateStatement(),
-                            ),
-                            SizedBox(height: 15,),
-                            ProjectDebtorsListWidget(
-                              context,
-                              name: 'Kayode Ola',
-                              address: '123 Olive Drive',
-                              amount: 'N50,000',
-                              function: ProjectDebtor,
-                            )
-                          ],
+                    ],
+                  ),
+                  //),
+                ),
+                Container(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        TotalDebtorsAmountCardWidget(
+                          context,
+                          title: 'Outstanding (Project)',
+                          amount: "N50,000.00",
+                          function: generateStatement(),
                         ),
-                      ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ProjectDebtorsListWidget(
+                          context,
+                          name: 'Kayode Ola',
+                          address: '123 Olive Drive',
+                          amount: 'N50,000',
+                          function: ProjectDebtor,
+                        )
+                      ],
                     ),
-                  ],
-                )
-            ),
+                  ),
+                ),
+              ],
+            )),
           ],
         ),
       ),
     );
   }
-  ServiceChargeDebtor(){}
-  ProjectDebtor(){}
-  generateStatement(){}
+
+  ServiceChargeDebtor() {}
+  ProjectDebtor() {}
+  generateStatement() {}
 }

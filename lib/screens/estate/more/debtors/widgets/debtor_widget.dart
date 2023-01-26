@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../../../models/debtors_model.dart';
 import '../../../../../util/colors.dart';
 import '../../../../../util/size_model.dart';
 import '../../../../../widgets/custom_dividers.dart';
@@ -10,12 +11,13 @@ class DebtorsListWidget extends StatefulWidget {
   late final String name;
   late final String address;
   late final String amount;
+  late final Debtors debtor;
 
-  DebtorsListWidget({
-    required this.name,
-    required this.address,
-    required this.amount,
-  });
+  DebtorsListWidget(
+      {required this.name,
+      required this.address,
+      required this.amount,
+      required this.debtor});
 
   @override
   State<DebtorsListWidget> createState() => _DebtorsListWidgetState();
@@ -29,7 +31,9 @@ class _DebtorsListWidgetState extends State<DebtorsListWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DebtorProfileScreen(),
+            builder: (context) => DebtorProfileScreen(
+              debtor: widget.debtor,
+            ),
           ),
         );
       },
@@ -54,11 +58,10 @@ class _DebtorsListWidgetState extends State<DebtorsListWidget> {
                         ),
                         child: Center(
                             child: Icon(
-                              Iconsax.folder,
-                              color: Colors.white,
-                              size: 25,
-                            )
-                        ),
+                          Iconsax.folder,
+                          color: Colors.white,
+                          size: 25,
+                        )),
                       ),
                       SizedBox(width: 16.0),
                       Column(
@@ -67,13 +70,25 @@ class _DebtorsListWidgetState extends State<DebtorsListWidget> {
                         children: [
                           SizedBox(
                             width: 170,
-                            child:Text(widget.address, style: TextStyle( fontWeight: FontWeight.bold,),),
+                            child: Text(
+                              widget.address,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                           //Text(widget.name),
-                          SizedBox(height: 5,),
+                          SizedBox(
+                            height: 5,
+                          ),
                           Text(widget.name),
-                          SizedBox(height: 5,),
-                          Text(widget.amount, style: TextStyle(color: AppColors.errorText),)
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            widget.amount,
+                            style: TextStyle(color: AppColors.errorText),
+                          )
                         ],
                       )
                     ],
@@ -98,7 +113,8 @@ class _DebtorsListWidgetState extends State<DebtorsListWidget> {
   }
 }
 
-Widget ProjectDebtorsListWidget(BuildContext context,{String? name, String? address, String? amount,Function? function}){
+Widget ProjectDebtorsListWidget(BuildContext context,
+    {String? name, String? address, String? amount, Function? function}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 5.0),
     child: GestureDetector(
@@ -124,11 +140,10 @@ Widget ProjectDebtorsListWidget(BuildContext context,{String? name, String? addr
                       ),
                       child: Center(
                           child: Icon(
-                            Iconsax.folder,
-                            color: Colors.white,
-                            size: 25,
-                          )
-                      ),
+                        Iconsax.folder,
+                        color: Colors.white,
+                        size: 25,
+                      )),
                     ),
                     SizedBox(width: 16.0),
                     Column(
@@ -137,13 +152,25 @@ Widget ProjectDebtorsListWidget(BuildContext context,{String? name, String? addr
                       children: [
                         SizedBox(
                           width: 170,
-                          child:Text(address!, style: TextStyle( fontWeight: FontWeight.bold,),),
+                          child: Text(
+                            address!,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                         //Text(widget.name),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(name!),
-                        SizedBox(height: 5,),
-                        Text(amount!, style: TextStyle(color: AppColors.errorText),)
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          amount!,
+                          style: TextStyle(color: AppColors.errorText),
+                        )
                       ],
                     )
                   ],
@@ -167,33 +194,35 @@ Widget ProjectDebtorsListWidget(BuildContext context,{String? name, String? addr
   );
 }
 
-Widget TotalDebtorsAmountCardWidget(BuildContext context, {String? amount, Function? function, String? title,})
-{
+Widget TotalDebtorsAmountCardWidget(
+  BuildContext context, {
+  String? amount,
+  Function? function,
+  String? title,
+}) {
   return Container(
     height: Sizes.h150,
     width: double.infinity,
     decoration: BoxDecoration(
       color: AppColors.errorText.withOpacity(.2),
       //border: Border.all(color: Colors.grey.withOpacity(.3)),
-      borderRadius:BorderRadius.all(Radius.circular(Sizes.w15)),
+      borderRadius: BorderRadius.all(Radius.circular(Sizes.w15)),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(title!,
-            style: TextStyle(
-                color: AppColors.errorText, fontSize: Sizes.w16)),
+            style: TextStyle(color: AppColors.errorText, fontSize: Sizes.w16)),
         customDivider(height: Sizes.h15),
         Text(amount!,
             style: TextStyle(
                 color: AppColors.errorText,
                 fontWeight: FontWeight.bold,
                 fontSize: Sizes.w25)),
-
         customDivider(height: Sizes.h5),
         InkWell(
-          onTap: (){
+          onTap: () {
             function!();
           },
           child: Container(
@@ -220,14 +249,14 @@ Widget TotalDebtorsAmountCardWidget(BuildContext context, {String? amount, Funct
             ),
           ),
         ),
-
         customDivider(height: Sizes.h5),
       ],
     ),
   );
 }
 
-Widget DebtorBillListWidget(BuildContext context, {String? amount, String? BillType, String? DateRange, Function? function}){
+Widget DebtorBillListWidget(BuildContext context,
+    {String? amount, String? BillType, String? DateRange, Function? function}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 5.0),
     child: GestureDetector(
@@ -250,13 +279,25 @@ Widget DebtorBillListWidget(BuildContext context, {String? amount, String? BillT
                       children: [
                         SizedBox(
                           width: 170,
-                          child:Text(amount!, style: TextStyle( fontWeight: FontWeight.bold,color: AppColors.errorText, fontSize: Sizes.w18),),
+                          child: Text(
+                            amount!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.errorText,
+                                fontSize: Sizes.w18),
+                          ),
                         ),
                         //Text(widget.name),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(BillType!),
-                        SizedBox(height: 5,),
-                        Text(DateRange!,)
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          DateRange!,
+                        )
                       ],
                     )
                   ],
@@ -280,7 +321,8 @@ Widget DebtorBillListWidget(BuildContext context, {String? amount, String? BillT
   );
 }
 
-Widget DebtorGeneratedBillListWidget(BuildContext context, {String? amount, String? BillType, String? DateRange, Function? function}){
+Widget DebtorGeneratedBillListWidget(BuildContext context,
+    {String? amount, String? BillType, String? DateRange, Function? function}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 5.0),
     child: GestureDetector(
@@ -303,13 +345,25 @@ Widget DebtorGeneratedBillListWidget(BuildContext context, {String? amount, Stri
                       children: [
                         SizedBox(
                           width: 170,
-                          child:Text(amount!, style: TextStyle( fontWeight: FontWeight.bold,color: AppColors.errorText, fontSize: Sizes.w18),),
+                          child: Text(
+                            amount!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.errorText,
+                                fontSize: Sizes.w18),
+                          ),
                         ),
                         //Text(widget.name),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(BillType!),
-                        SizedBox(height: 5,),
-                        Text(DateRange!,)
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          DateRange!,
+                        )
                       ],
                     )
                   ],
@@ -333,7 +387,8 @@ Widget DebtorGeneratedBillListWidget(BuildContext context, {String? amount, Stri
   );
 }
 
-Widget DebtorPaidBillListWidget(BuildContext context, {String? amount, String? BillType, String? DateRange, Function? function}){
+Widget DebtorPaidBillListWidget(BuildContext context,
+    {String? amount, String? BillType, String? DateRange, Function? function}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 5.0),
     child: GestureDetector(
@@ -356,13 +411,25 @@ Widget DebtorPaidBillListWidget(BuildContext context, {String? amount, String? B
                       children: [
                         SizedBox(
                           width: 170,
-                          child:Text(amount!, style: TextStyle( fontWeight: FontWeight.bold,color: AppColors.success, fontSize: Sizes.w18),),
+                          child: Text(
+                            amount!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.success,
+                                fontSize: Sizes.w18),
+                          ),
                         ),
                         //Text(widget.name),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(BillType!),
-                        SizedBox(height: 5,),
-                        Text(DateRange!,)
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          DateRange!,
+                        )
                       ],
                     )
                   ],

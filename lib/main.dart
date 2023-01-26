@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manager/providers/login_response_provider.dart';
 import 'package:manager/providers/workspace_provider.dart';
 import 'package:provider/provider.dart';
+import 'providers/debtors_provider.dart';
 import 'providers/user_provider.dart';
 import 'providers/wallet_provider.dart';
 import 'util/routes.dart';
@@ -22,6 +23,8 @@ class MyApp extends StatelessWidget {
         statusBarIconBrightness: Brightness.dark));
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<DebtorsProvider>(
+            create: (_) => DebtorsProvider()),
         ChangeNotifierProvider<LoginResponseProvider>(
             create: (_) => LoginResponseProvider()),
         ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),

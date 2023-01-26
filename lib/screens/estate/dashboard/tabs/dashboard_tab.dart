@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:manager/models/login/login_response.dart';
+import 'package:manager/providers/debtors_provider.dart';
 import 'package:manager/providers/login_response_provider.dart';
 import 'package:manager/providers/workspace_provider.dart';
 import 'package:manager/screens/estate/notification/notification_screen.dart';
@@ -44,10 +45,22 @@ class _DashboardTabState extends State<DashboardTab> {
     ToDo(Iconsax.clipboard_text, 'Resolve an issue',
         'Generate a code for a new tenant today', '/incident_report'),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final prov = Provider.of<WorkspaceProvider>(context, listen: false);
+    String workspaceId = prov.getWorkspace!['workspace']['workspaceId'];
+    Provider.of<DebtorsProvider>(context, listen: false).fetch(workspaceId);
+  }
+
   @override
   Widget build(BuildContext context) {
     var profile = Provider.of<LoginResponseProvider>(context).loginResponse;
     var currentWorkspace = Provider.of<WorkspaceProvider>(context).getWorkspace;
+
+    print(context.read<DebtorsProvider>().get);
 
     DateTime now = DateTime.now();
     var timeNow = int.parse(DateFormat('kk').format(now));
@@ -254,13 +267,16 @@ class _DashboardTabState extends State<DashboardTab> {
                                     fontSize: Sizes.w20),
                               ),
                               customDivider(height: Sizes.h10),
-                              Text(
-                                '0',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: Sizes.w25,
-                                ),
-                              )
+                              Consumer<DebtorsProvider>(
+                                  builder: (context, debtors, child) {
+                                return Text(
+                                  debtors.totalDebtors.toString(),
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: Sizes.w25,
+                                  ),
+                                );
+                              })
                             ],
                           ),
                         )),
