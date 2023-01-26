@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -28,18 +30,22 @@ class _InviteMemberScreenState extends State<InviteMemberScreen> {
 
   String? selectedValue;
 
+  Map<String, dynamic> _errors = {};
+
   @override
   void initState() {
     final prov = Provider.of<WorkspaceProvider>(context, listen: false);
     String workspaceId = prov.getWorkspace!['workspace']['workspaceId'];
     Provider.of<UserProvider>(context, listen: false).fetchRoles(workspaceId);
 
+    print(Provider.of<UserProvider>(context, listen: false).roles);
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(Provider.of<UserProvider>(context).roles);
+
     return Scaffold(
       appBar: AppBarWidget().appbar(
         context: context,
@@ -63,7 +69,7 @@ class _InviteMemberScreenState extends State<InviteMemberScreen> {
                             children: [
                               FormBuilderTextField(
                                 name: "email",
-                                decoration: InputDecoration(labelText: 'Email'),
+                                decoration: InputDecoration(labelText: 'Email', errorText: _errors.containsKey('error') ? _errors['error'] : null),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Email is required.';
@@ -74,7 +80,7 @@ class _InviteMemberScreenState extends State<InviteMemberScreen> {
                               SizedBox(
                                 height: 10,
                               ),
-                              Provider.of<UserProvider>(context).loading
+                              Provider.of<UserProvider>(context).roles_loading
                                   ? CircularProgressIndicator()
                                   //: DropdownButtonFormField2(
                                   : FormBuilderDropdown(
@@ -144,11 +150,14 @@ class _InviteMemberScreenState extends State<InviteMemberScreen> {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(Sizes.w10)))),
                                 onPressed: () async {
+                                  setState(() {
+                                    _errors = {};
+                                  });
                                   _formkey.currentState!.save();
                                   if (_formkey.currentState!.validate()) {
                                     final progress = ProgressHUD.of(context);
 
-                                    ///progress?.showWithText('Inviting User...');
+                                    progress?.showWithText('Inviting User...');
                                     //print(_formkey.currentState!.value);
                                     final profile =
                                         Provider.of<LoginResponseProvider>(
@@ -161,27 +170,35 @@ class _InviteMemberScreenState extends State<InviteMemberScreen> {
                                     String workspaceId =
                                         prov.getWorkspace!['workspace']
                                             ['workspaceId'];
-                                    var data = {
+                                    Map<String, dynamic> data = {
                                       //'memberId': '${profile.id}',
                                       'email':
-                                          _formkey.currentState!.value['email'],
+                                          _formkey.currentState!.value['email'].trim(),
                                       'roles': [
                                         _formkey.currentState!.value['role']
                                       ],
                                     };
                                     print(data);
 
-                                    Map<String, dynamic> res =
+                                    var res =
                                         await Provider.of<UserProvider>(context,
                                                 listen: false)
-                                            .sendInvite(workspaceId, {});
+                                            .sendInvite(workspaceId, data);
 
-                                    ///progress?.dismiss();
-                                    /* Future.delayed(Duration(seconds: 4), () {
-                                      progress?.dismiss();
+                                    progress?.dismiss();
+                                    if(res == null){
+                                      print('response is null');
+                                    }
+                                    else if(res.statusCode == 201){
                                       success();
-                                      //success();
-                                    }); */
+                                    }else{
+                                      //handle errors
+                                      print('**response**');
+                                      print(jsonDecode(res.body)['message']);
+                                      setState(() {
+                                        _errors = {'error': jsonDecode(res.body)['message']};
+                                      });
+                                    }
                                   }
                                 },
                                 child: Text('Invite',

@@ -422,6 +422,13 @@
             </list>
           </value>
         </entry>
+        <entry key="nested">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/nested-1.0.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="nm">
           <value>
             <list>
@@ -538,6 +545,13 @@
           <value>
             <list>
               <option value="$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/process-4.2.4/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="provider">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/provider-6.0.5/lib" />
             </list>
           </value>
         </entry>
@@ -775,6 +789,7 @@
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/meta-1.8.0/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/multiselect_formfield-0.1.7/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/nb_utils-4.6.1/lib" />
+      <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/nested-1.0.0/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/nm-0.5.0/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/number_display-3.0.0/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/passwordfield-0.1.0/lib" />
@@ -792,6 +807,7 @@
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/platform-3.1.0/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-2.1.2/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/process-4.2.4/lib" />
+      <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/provider-6.0.5/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/quiver-3.1.0/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/reactive_forms-13.0.0/lib" />
       <root url="file://$PROJECT_DIR$/../../SDK/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.15/lib" />

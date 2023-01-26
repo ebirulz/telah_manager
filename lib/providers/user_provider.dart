@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart';
 
 import '../models/user_model.dart';
 import '../util/api.dart';
@@ -8,13 +9,15 @@ class UserProvider extends ChangeNotifier {
   List<UserModel> _invited = [];
   List _roles = [];
   bool loading = false;
+  bool roles_loading = false;
+
 
   List<UserModel> get get => _users;
   List<UserModel> get invited => _invited;
   List get roles => _roles;
 
   Future<void> fetch(String workspaceId, {bool state = false}) async {
-    loading = true;
+    roles_loading = true;
     var res = await Api.getData(
         'account-api/workspaces/${workspaceId}/members?pending=${state}&offset=0&limit=50');
 
@@ -30,7 +33,7 @@ class UserProvider extends ChangeNotifier {
       });
     }
 
-    loading = false;
+    roles_loading = false;
     notifyListeners();
   }
 
@@ -45,12 +48,12 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future sendInvite(String workspaceId, Map<String, dynamic> data) async {
+  Future<Response?> sendInvite(String workspaceId, Map<String, dynamic> data) async {
     loading = true;
     var res = await Api.postData(
         'account-api/workspaces/${workspaceId}/members', data);
 
-    print(res);
+    return res;
 
     loading = false;
     notifyListeners();

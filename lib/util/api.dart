@@ -78,9 +78,9 @@ class Api {
           body: jsonEncode(data));
       print(response.body);
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        return response;//jsonDecode(response.body);
       } else if (response.statusCode == 201) {
-        return jsonDecode(response.body);
+        return response;//jsonDecode(response.body);
       } else if (response.statusCode == 401) {
         print("ResponseStatus:: ${response.statusCode.toString()}");
         print(ServerConfig.BASE_URL + '/oauth2/token');
@@ -111,8 +111,8 @@ class Api {
           return null;
         }
       } else {
+        return response;
         print("ResponseStatus:: ${response.statusCode.toString()}");
-        return null;
       }
     } on Exception catch (e) {
       print("PostException:: ${e.toString()}");
