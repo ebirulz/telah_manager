@@ -353,6 +353,10 @@ class _DashboardTabState extends State<DashboardTab> {
                         workspaces[index].workspaceId, profile.accessToken);
                     wsp.setWorkspace(workspace);
                     prettyPrint(workspace!);
+
+                    //fetch debtors
+                    Provider.of<DebtorsProvider>(context, listen: false).fetch(workspaces[index].workspaceId);
+
                     Navigator.of(context).pop();
                   },
                   child: ListTile(
