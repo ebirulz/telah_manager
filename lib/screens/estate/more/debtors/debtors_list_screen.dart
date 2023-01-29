@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manager/providers/debtors_provider.dart';
 import 'package:provider/provider.dart';
+import '../../../../providers/workspace_provider.dart';
 import 'widgets/debtor_widget.dart';
 
 import '../../../../util/colors.dart';
@@ -21,6 +22,11 @@ class _DebtorsListScreenState extends State<DebtorsListScreen>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
+print('******init state');
+    final prov = Provider.of<WorkspaceProvider>(context, listen: false);
+    String workspaceId = prov.getWorkspace!['workspace']['workspaceId'];
+    Provider.of<DebtorsProvider>(context, listen: false).fetchLedgers(workspaceId, 'AMENITY');
+    Provider.of<DebtorsProvider>(context, listen: false).fetchLedgers(workspaceId, 'PROJECT');
   }
 
   @override
@@ -85,7 +91,7 @@ class _DebtorsListScreenState extends State<DebtorsListScreen>
                       TotalDebtorsAmountCardWidget(
                         context,
                         title: 'Outstanding (Service Charge)',
-                        amount: "N2,000,000.00",
+                        amount: "N${context.watch<DebtorsProvider>().amenity['totalOutstanding']}",
                         function: generateStatement(),
                       ),
                       SizedBox(
@@ -124,28 +130,43 @@ class _DebtorsListScreenState extends State<DebtorsListScreen>
                   //),
                 ),
                 Container(
-                  child: SingleChildScrollView(
+                  //child: SingleChildScrollView(
                     child: Column(
                       children: [
                         TotalDebtorsAmountCardWidget(
                           context,
                           title: 'Outstanding (Project)',
-                          amount: "N50,000.00",
+                          amount: "N${context.watch<DebtorsProvider>().project['totalOutstanding']}",
                           function: generateStatement(),
                         ),
                         SizedBox(
                           height: 15,
                         ),
-                        ProjectDebtorsListWidget(
+                        /*ProjectDebtorsListWidget(
                           context,
                           name: 'Kayode Ola',
                           address: '123 Olive Drive',
                           amount: 'N50,000',
                           function: ProjectDebtor,
-                        )
+                        )*/
+                        Expanded(
+                          child: ListView.builder(
+                            //shrinkWrap: false,
+                              itemCount:
+                              context.watch<DebtorsProvider>().projects.length,
+                              itemBuilder: (context, index) {
+                                return ProjectDebtorsListWidget(
+                                  context,
+                                  name: '${context.watch<DebtorsProvider>().projects[index]['project']['billingType']}',
+                                  address: '${context.watch<DebtorsProvider>().projects[index]['project']['name']}',
+                                  amount: 'N${context.watch<DebtorsProvider>().projects[index]['totalOutstanding']}',
+                                  function: ProjectDebtor,
+                                );
+                              }),
+                        ),
                       ],
                     ),
-                  ),
+                  //),
                 ),
               ],
             )),
