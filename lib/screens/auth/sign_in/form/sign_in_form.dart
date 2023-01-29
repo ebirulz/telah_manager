@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:manager/providers/login_response_provider.dart';
 import 'package:manager/providers/workspace_provider.dart';
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -109,6 +110,8 @@ class _SignInFormState extends State<SignInForm> {
                       context: context,
                       function: form.valid
                           ? () async {
+                              final progress = ProgressHUD.of(context);
+                              progress?.showWithText('Logging in...');
                               //login
                               var result =
                                   await LoginController().login(formGroup);
@@ -161,6 +164,7 @@ class _SignInFormState extends State<SignInForm> {
 
                                 proceed();
                               }
+                              progress?.dismiss();
                             }
                           : form.markAllAsTouched,
                       buttonText: loginButtonTxt,
