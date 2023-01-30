@@ -21,6 +21,10 @@ class PropertiesTab extends StatefulWidget {
 class _PropertiesTabstate extends State<PropertiesTab> {
   late List PropertyUnits;
   List _propertyUnits = [];
+  List _filteredUnits = [];
+  String filter = "";
+
+  TextEditingController _searchController = TextEditingController();
 
   getPus() async {
     final profile = Provider.of<LoginResponseProvider>(context, listen: false)
@@ -35,6 +39,22 @@ class _PropertiesTabstate extends State<PropertiesTab> {
 
     setState(() {
       _propertyUnits = pu!['results'];
+      _filteredUnits = _propertyUnits;
+    });
+
+    _searchController.addListener(() {
+      if (_searchController.text.isEmpty) {
+        setState(() {
+          filter = "";
+          _filteredUnits = _propertyUnits;
+          print('search empty');
+        });
+      } else {
+        setState(() {
+          filter = _searchController.text;
+          print('search not empty');
+        });
+      }
     });
   }
 
@@ -46,9 +66,37 @@ class _PropertiesTabstate extends State<PropertiesTab> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Sizes().heightSizeCalc(context);
     Sizes().widthSizeCalc(context);
+
+    if (filter.isNotEmpty) {
+      List tmpList = [];
+      _filteredUnits.forEach((element) {
+        if (element['billingGroup']['name']
+                .toLowerCase()
+                .contains(filter.toLowerCase()) ||
+            element['houseNumber']
+                .toLowerCase()
+                .contains(filter.toLowerCase()) ||
+            element['streetName']
+                .toLowerCase()
+                .contains(filter.toLowerCase()) ||
+            element['activeTenures'][0]['primaryResidents'][0]['displayName']
+                .toLowerCase()
+                .contains(filter.toLowerCase())) {
+          tmpList.add(element);
+        }
+      });
+      _filteredUnits = tmpList;
+    }
+
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -92,6 +140,7 @@ class _PropertiesTabstate extends State<PropertiesTab> {
                             child: Container(
                               margin: FxSpacing.left(12),
                               child: TextFormField(
+                                controller: _searchController,
                                 decoration: InputDecoration(
                                   fillColor: AppColors.stepperBg,
                                   hintText: "Search for Properties and People",
@@ -131,14 +180,14 @@ class _PropertiesTabstate extends State<PropertiesTab> {
             ) */
             Expanded(
               child: ListView.builder(
-                itemCount: _propertyUnits.length,
+                itemCount: _filteredUnits.length,
                 itemBuilder: (context, index) {
                   return PropertyUnitCard(
                     address:
-                        '[${_propertyUnits[index]['billingGroup']['name']}] ${_propertyUnits[index]['houseNumber']} ${_propertyUnits[index]['streetName']}',
+                        '[${_filteredUnits[index]['billingGroup']['name']}] ${_filteredUnits[index]['houseNumber']} ${_filteredUnits[index]['streetName']}',
                     propertyOccupant:
-                        '${_propertyUnits[index]['activeTenures'][0]['primaryResidents'][0]['displayName']}',
-                    propertyUnit: _propertyUnits[index],
+                        '${_filteredUnits[index]['activeTenures'][0]['primaryResidents'][0]['displayName']}',
+                    propertyUnit: _filteredUnits[index],
                   );
                 },
               ),
